@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 from Plugins.Extensions.IPTVPlayer.tools.iptvtools import printDBG
 from Plugins.Extensions.IPTVPlayer.libs import ph
-from Plugins.Extensions.IPTVPlayer.tsiplayer.tstools import TSCBaseHostClass,tunisia_gouv
+from Plugins.Extensions.IPTVPlayer.tsiplayer.libs.tstools import TSCBaseHostClass,tunisia_gouv
 from Components.config import config
 import re
 
@@ -12,7 +12,7 @@ def getinfo():
 	info_['name']='Imsakiyat Ramadan (Meteo.Tn)'
 	info_['version']='1.0 19/04/2019'
 	info_['dev']='RGYSoft'
-	info_['cat_id']='4'
+	info_['cat_id']='204'
 	info_['desc']='امساكية رمضان + اوقات الصلاة الرسمية للجمهورية التونسية'
 	info_['icon']='http://www.meteo.tn/listefr/evenement/imsakia2013/ramadan.jpg'
 	info_['warning']='Only for Tunisia'
@@ -30,7 +30,7 @@ class TSIPHost(TSCBaseHostClass):
 		self.getPage = self.cm.getPage
 		
 	def showmenu(self,cItem):	
-		self.addDir({'category' :'host2','title':'إمساكية رمضان','icon':'http://www.meteo.tn/listefr/evenement/imsakia2019/ramadan.jpg','mode': '31'})		
+		#self.addDir({'category' :'host2','title':'إمساكية رمضان','icon':'http://www.meteo.tn/listefr/evenement/imsakia2019/ramadan.jpg','mode': '31'})		
 		self.addDir({'category' :'host2','title':'أوقات الصلاة','icon':'https://www.newzoogle.com/wp-content/uploads/2016/03/Best-Islamic-Prayer-Times-Apps-for-Android.png','mode': '30'})		
 		
 			

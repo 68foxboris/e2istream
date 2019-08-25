@@ -4,14 +4,13 @@
 #
 # @Codermik release, based on @Samsamsam's E2iPlayer public.
 # Released with kind permission of Samsamsam.
-# All code developed by Samsamsam is the property of the Samsamsam and the E2iPlayer project,  
-# all other work is © E2iStream Team, aka Codermik.  TSiPlayer is © Rgysoft, his group can be
+# All code developed by Samsamsam is the property of Samsamsam and the E2iPlayer project,  
+# all other work is ï¿½ E2iStream Team, aka Codermik.  TSiPlayer is ï¿½ Rgysoft, his group can be
 # found here:  https://www.facebook.com/E2TSIPlayer/
 #
 # https://www.facebook.com/e2iStream/
 #
 #
-
 
 import os
 from Plugins.Extensions.WebInterface.WebChilds.Toplevel import addExternalChild
@@ -59,10 +58,10 @@ def checkForFC():
 if os.path.exists(resolveFilename(SCOPE_PLUGINS,'Extensions/WebInterface/web/external.xml')):
 	try:
 		addExternalChild( ("E2iStream", IPTVwebRoot, "E2iStream", settings.WebInterfaceVersion, True) )
-                addExternalChild( ("iptvplayer", IPTVwebRoot, "E2iStream", settings.WebInterfaceVersion, True) )
+                addExternalChild( ("E2iStream", IPTVwebRoot, "E2iStream", settings.WebInterfaceVersion, True) )
 	except Exception:
 		addExternalChild( ("E2iStream", IPTVwebRoot) )
-                addExternalChild( ("iptvplayer", IPTVwebRoot) )
+                addExternalChild( ("E2iStream", IPTVwebRoot) )
 # registration for openwebif
 elif os.path.exists(resolveFilename(SCOPE_PLUGINS,'Extensions/OpenWebif/pluginshook.src')):
 	# Old openwebif version (prior July the 14th 2017) has a bug and does not populate links to all properly registered web addons except fancontrol
@@ -73,7 +72,7 @@ elif os.path.exists(resolveFilename(SCOPE_PLUGINS,'Extensions/OpenWebif/pluginsh
 		fcRoot.putChild("", redirectionPage())
 		try:
 			addExternalChild( ("fancontrol", fcRoot, "E2iStream", settings.WebInterfaceVersion) )
-			addExternalChild( ("iptvplayer", IPTVwebRoot, None, None) )
+			addExternalChild( ("E2iStream", IPTVwebRoot, None, None) )
 		except Exception:
 			print "[E2iStream] exception registering Web interface in FC mode"
 	else: #user still can use IPTV web interface, but would need to mark URL manually depending on the openWebIf version

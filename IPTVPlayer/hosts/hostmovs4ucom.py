@@ -5,12 +5,13 @@
 # @Codermik release, based on @Samsamsam's E2iPlayer public.
 # Released with kind permission of Samsamsam.
 # All code developed by Samsamsam is the property of the Samsamsam and the E2iPlayer project,  
-# all other work is © E2iStream Team, aka Codermik.  TSiPlayer is © Rgysoft, his group can be
+# all other work is � E2iStream Team, aka Codermik.  TSiPlayer is � Rgysoft, his group can be
 # found here:  https://www.facebook.com/E2TSIPlayer/
 #
 # https://www.facebook.com/e2iStream/
 #
 #
+
 
 ###################################################
 # LOCAL import
@@ -43,52 +44,31 @@ class Movs4uCOM(CBaseHostClass):
         self.DEFAULT_ICON_URL = self.getFullIconUrl('/wp-content/uploads/2018/03/TcCsO2w.png')
         self.cacheLinks = {}
         self.cacheSeasons = {}
-        self.defaultParams = {'header': self.HEADER,
-         'use_cookie': True,
-         'load_cookie': True,
-         'save_cookie': True,
-         'cookiefile': self.COOKIE_FILE}
-        self.MAIN_CAT_TAB = [{'category': 'list_items',
-          'title': _('Movies'),
-          'url': self.getFullUrl('/movie/')},
-         {'category': 'list_items',
-          'title': _('Series'),
-          'url': self.getFullUrl('/tvshows/')},
-         {'category': 'list_items',
-          'title': _('Collections'),
-          'url': self.getFullUrl('/collection/')},
-         {'category': 'list_filters',
-          'title': _('Filters')},
-         {'category': 'search',
-          'title': _('Search'),
-          'search_item': True},
-         {'category': 'search_history',
-          'title': _('Search history')}]
-        self.FILTERS_CAT_TAB = [{'category': 'list_main',
-          'title': _('Alphabetically'),
-          'tab_id': 'abc'},
-         {'category': 'list_main',
-          'title': _('Categories'),
-          'tab_id': 'categories'},
-         {'category': 'list_main',
-          'title': _('Genres'),
-          'tab_id': 'genres'},
-         {'category': 'list_main',
-          'title': _('Qualities'),
-          'tab_id': 'qualities'},
-         {'category': 'list_main',
-          'title': _('Releases'),
-          'tab_id': 'releases'}]
+        self.defaultParams = {'timeout':9, 'header': self.HEADER, 'use_cookie': True, 'load_cookie': True, 'save_cookie': True, 'cookiefile': self.COOKIE_FILE}
+
+        self.MAIN_CAT_TAB = [
+                                    {'category': 'list_items', 'title': _('Movies'), 'url': self.getFullUrl('/movie/')}, 
+                                    {'category': 'list_items', 'title': _('Series'), 'url': self.getFullUrl('/tvshows/')},
+                                    {'category': 'list_items', 'title': _('Collections'), 'url': self.getFullUrl('/collection/')},
+                                    {'category': 'list_filters', 'title': _('Filters')},
+                                    {'category': 'search', 'title': _('Search'), 'search_item': True},
+                                    {'category': 'search_history', 'title': _('Search history')}
+                            ]
+
+        self.FILTERS_CAT_TAB = [
+                                    {'category': 'list_main', 'title': _('Alphabetically'), 'tab_id': 'abc'},
+                                    {'category': 'list_main', 'title': _('Categories'),'tab_id': 'categories'},
+                                    {'category': 'list_main', 'title': _('Genres'), 'tab_id': 'genres'},
+                                    {'category': 'list_main', 'title': _('Qualities'),'tab_id': 'qualities'},
+                                    {'category': 'list_main', 'title': _('Releases'),'tab_id': 'releases'}
+                                ]
         self.reLinkData = re.compile('\\sdata\\-([^=]+?)=[\'"]([^\'^"]*?)[\'"]')
 
     def getPage(self, baseUrl, addParams = {}, post_data = None):
-        if addParams == {}:
-            addParams = dict(self.defaultParams)
+        if addParams == {}: addParams = dict(self.defaultParams)
         origBaseUrl = baseUrl
         baseUrl = self.cm.iriToUri(baseUrl)
-        printDBG('+++> [%s] - > [%s]' % (origBaseUrl, baseUrl))
-        addParams['cloudflare_params'] = {'cookie_file': self.COOKIE_FILE,
-         'User-Agent': self.USER_AGENT}
+        addParams['cloudflare_params'] = {'cookie_file': self.COOKIE_FILE, 'User-Agent': self.USER_AGENT}
         return self.cm.getPageCFProtection(baseUrl, addParams, post_data)
 
     def listMainItems(self, cItem, nextCategory):

@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 from Plugins.Extensions.IPTVPlayer.tools.iptvtools import printDBG
 from Plugins.Extensions.IPTVPlayer.tools.iptvtypes import strwithmeta
-from Plugins.Extensions.IPTVPlayer.tsiplayer.tstools import TSCBaseHostClass
+from Plugins.Extensions.IPTVPlayer.tsiplayer.libs.tstools import TSCBaseHostClass
 
 import re
 
@@ -10,7 +10,7 @@ def getinfo():
 	info_['name']='WSS V2.3 (Android App)'
 	info_['version']='1.0 24/04/2019'
 	info_['dev']='RGYSoft'
-	info_['cat_id']='2'
+	info_['cat_id']='100'
 	info_['desc']=' تطبيق اندوريد للبث المباشر للقنوات الرياضية'
 	info_['icon']='https://i.ibb.co/xYDVLNY/cdordh6s.jpg'
 	info_['recherche_all']='0'	

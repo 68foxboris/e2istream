@@ -64,7 +64,7 @@ class SolarMovie(CBaseHostClass):
         
         self.defaultParams = {'header':self.HEADER, 'use_cookie': True, 'load_cookie': True, 'save_cookie': True, 'cookiefile': self.COOKIE_FILE}
         
-        self.DEFAULT_ICON_URL = 'https://www.softrix.co.uk/istream/resources/icons/selector/solarmovie100.png' # updated resource 15/5/2019 @Codermik
+        self.DEFAULT_ICON_URL = 'http://www.softrix.co.uk/istream/resources/icons/selector/solarmovie100.png' # updated resource 15/5/2019 @Codermik
         self.MAIN_URL = None
         self.cacheFiltersKeys = []
         self.cacheFilters = {}

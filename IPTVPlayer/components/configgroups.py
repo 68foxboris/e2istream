@@ -4,7 +4,7 @@
 #
 # @Codermik release, based on @Samsamsam's E2iPlayer public.
 # Released with kind permission of Samsamsam.
-# All code developed by Samsamsam is the property of the Samsamsam and the E2iPlayer project,  
+# All code developed by Samsamsam is the property of Samsamsam and the E2iPlayer project,  
 # all other work is © E2iStream Team, aka Codermik.  TSiPlayer is © Rgysoft, his group can be
 # found here:  https://www.facebook.com/E2TSIPlayer/
 #
@@ -12,6 +12,7 @@
 #
 #
 
+#
 #  Konfigurator dla iptv 2013
 #  autorzy: j00zek, samsamsam
 #
@@ -45,7 +46,7 @@ class ConfigGroupsMenu(ConfigBaseWidget):
         self.groupObj = IPTVHostsGroups()
         
         ConfigBaseWidget.__init__(self, session)
-        self.setup_title = _("E2iStream enable/disabled groups")
+        self.setup_title = _("E2iStream Enable/Disabled Groups")
         self.__preparLists()
 
     def __del__(self):

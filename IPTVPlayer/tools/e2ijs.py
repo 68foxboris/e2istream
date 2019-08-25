@@ -4,7 +4,7 @@
 #
 # @Codermik release, based on @Samsamsam's E2iPlayer public.
 # Released with kind permission of Samsamsam.
-# All code developed by Samsamsam is the property of the Samsamsam and the E2iPlayer project,  
+# All code developed by Samsamsam is the property of Samsamsam and the E2iPlayer project,  
 # all other work is © E2iStream Team, aka Codermik.  TSiPlayer is © Rgysoft, his group can be
 # found here:  https://www.facebook.com/E2TSIPlayer/
 #
@@ -44,7 +44,7 @@ def duktape_execute(cmd_params):
 
     if noDuk:
         messages = [_('The %s utility is necessary here but it was not detected.') % ('duktape')]
-        messages.append(_('Please consider restart your Engima2 and agree to install the %s utlity when the %s will propose this.') % ('duktape', 'E2iStream'))
+        messages.append(_('Please consider restarting your Engima2 and agree to install the %s utlity when %s asks.') % ('duktape', 'E2iStream'))
         GetIPTVNotify().push('\n'.join(messages), 'error', 40, 'no_duktape', 40)
 
     printDBG('duktape_execute cmd ret[%s]' % ret)

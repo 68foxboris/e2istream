@@ -4,7 +4,7 @@
 #
 # @Codermik release, based on @Samsamsam's E2iPlayer public.
 # Released with kind permission of Samsamsam.
-# All code developed by Samsamsam is the property of the Samsamsam and the E2iPlayer project,  
+# All code developed by Samsamsam is the property of Samsamsam and the E2iPlayer project,  
 # all other work is © E2iStream Team, aka Codermik.  TSiPlayer is © Rgysoft, his group can be
 # found here:  https://www.facebook.com/E2TSIPlayer/
 #
@@ -367,7 +367,7 @@ class MyjdRequestHandler(BaseHTTPRequestHandler):
                 #sys.exit(-1)
         elif data['url'] == '/captcha/list':
             if jd.captcha_result == None:
-                return_data = [{'hoster': 'iptvplayer.gitlab.io', 'created': jd.captcha_data['id'], 'explain': None, 'id': jd.captcha_data['id'], 'captchaCategory': 'recaptchav2', 'link': 1535005786381L, 'timeout': 600000, 'type': 'RecaptchaV2Challenge', 'remaining': 593028}]
+                return_data = [{'hoster': 'softrix.co.uk', 'created': jd.captcha_data['id'], 'explain': None, 'id': jd.captcha_data['id'], 'captchaCategory': 'recaptchav2', 'link': 1535005786381L, 'timeout': 600000, 'type': 'RecaptchaV2Challenge', 'remaining': 593028}]
             else:
                 return_data = []
         elif data['url'] == '/events/subscribe':
@@ -398,7 +398,7 @@ class MyjdRequestHandler(BaseHTTPRequestHandler):
 
         elif data['url'] == '/captcha/getCaptchaJob':
             if jd.captcha_result == None:
-                return_data = {'hoster': 'iptvplayer.gitlab.io', 'created': jd.captcha_data['id'], 'explain': None, 'id': jd.captcha_data['id'], 'captchaCategory': 'recaptchav2', 'link': 1535005786381L, 'timeout': 600000, 'type': 'RecaptchaV2Challenge', 'remaining': 593028}
+                return_data = {'hoster': 'softrix.co.uk', 'created': jd.captcha_data['id'], 'explain': None, 'id': jd.captcha_data['id'], 'captchaCategory': 'recaptchav2', 'link': 1535005786381L, 'timeout': 600000, 'type': 'RecaptchaV2Challenge', 'remaining': 593028}
             else:
                 return_data = None
         elif data['url'] == '/captcha/get':

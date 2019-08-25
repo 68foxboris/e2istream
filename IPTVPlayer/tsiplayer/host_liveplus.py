@@ -2,7 +2,7 @@
 from Plugins.Extensions.IPTVPlayer.tools.iptvtools import printDBG
 from Plugins.Extensions.IPTVPlayer.tools.iptvtypes import strwithmeta
 from Plugins.Extensions.IPTVPlayer.libs.e2ijson import loads as json_loads
-from Plugins.Extensions.IPTVPlayer.tsiplayer.tstools import TSCBaseHostClass
+from Plugins.Extensions.IPTVPlayer.tsiplayer.libs.tstools import TSCBaseHostClass
 
 import re
 
@@ -11,7 +11,7 @@ def getinfo():
 	info_['name']='Live-Plus (Android App)'
 	info_['version']='1.0 16/04/2019'
 	info_['dev']='RGYSoft'
-	info_['cat_id']='2'
+	info_['cat_id']='100'
 	info_['desc']='لايف بلس - تطبيق اندوريد للبث المباشر ونقل المباريات'
 	info_['icon']='https://1.bp.blogspot.com/-3pyupZsjjYQ/XCebvbl5wrI/AAAAAAAAE7Y/ImJpNdUk2EQGupEYnsfUOFXfkBBuY_4JQCLcBGAs/s640/DOWNLOAD%2BLIVE%2BPLUS%2BAPK%2B2018.png'
 	info_['recherche_all']='0'

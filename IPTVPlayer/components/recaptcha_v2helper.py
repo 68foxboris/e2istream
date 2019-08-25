@@ -4,7 +4,7 @@
 #
 # @Codermik release, based on @Samsamsam's E2iPlayer public.
 # Released with kind permission of Samsamsam.
-# All code developed by Samsamsam is the property of the Samsamsam and the E2iPlayer project,  
+# All code developed by Samsamsam is the property of Samsamsam and the E2iPlayer project,  
 # all other work is © E2iStream Team, aka Codermik.  TSiPlayer is © Rgysoft, his group can be
 # found here:  https://www.facebook.com/E2TSIPlayer/
 #
@@ -61,7 +61,7 @@ class CaptchaHelper():
             if recaptcha != None:
                 token = recaptcha.processCaptcha(sitekey, refUrl)
             else:
-                errorMsgTab.append(_('Please visit %s to learn how to redirect this task to the external device.') % 'http://www.iptvplayer.gitlab.io/captcha.html')
+                errorMsgTab.append(_('Please visit %s to learn how to redirect this task to a external device.') % 'https://www.softrix.co.uk/istream/reCAPTCHA.html')
                 if not beQuaiet:
                     self.sessionEx.waitForFinishOpen(MessageBox, '\n'.join(errorMsgTab), type=MessageBox.TYPE_ERROR, timeout=20)
                 if bypassCaptchaService != None:

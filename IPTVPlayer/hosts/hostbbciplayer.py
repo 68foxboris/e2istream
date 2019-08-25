@@ -44,7 +44,13 @@ class BBCiPlayer(CBaseHostClass):
         self.defaultParams = {'header': self.HEADER, 'use_cookie': True, 'load_cookie': True, 'save_cookie': True, 'cookiefile': self.COOKIE_FILE}
         self.MAIN_URL = 'https://www.bbc.co.uk/'
         self.DEFAULT_ICON_URL = 'http://iplayer-web.files.bbci.co.uk/tviplayer-static-assets/10.75.0-1/img/navigation/iplayer_pink.png'
-        self.MAIN_CAT_TAB = [{'category': 'list_channels', 'title': _('Channels'), 'url': self.getFullUrl('iplayer')}, {'category': 'list_categories', 'title': _('Categories'), 'url': self.getFullUrl('iplayer')}, {'category': 'list_az_menu', 'title': _('A-Z'), 'url': self.getFullUrl('iplayer/a-z/')}, {'category': 'list_items', 'title': _('Most Popular'), 'url': self.getFullUrl('iplayer/group/most-popular')}, {'category': 'search', 'title': _('Search'), 'search_item': True, 'icon': 'https://raw.githubusercontent.com/vonH/plugin.video.iplayerwww/master/media/search.png'}, {'category': 'search_history', 'title': _('Search history')}]
+        self.HOST_VER = '2.0 (23/08/2019)'
+        self.MAIN_CAT_TAB = [{'category': 'list_channels', 'title': _('Channels'), 'url': self.getFullUrl('iplayer'),'desc': '\c00????00 Info: \c00??????BBC iPlayer\\n \c00????00Version: \c00??????'+self.HOST_VER+'\\n \c00????00Developer: \c00??????Codermik\\n'}, 
+                             {'category': 'list_categories', 'title': _('Categories'), 'url': self.getFullUrl('iplayer'),'desc': '\c00????00 Info: \c00??????BBC iPlayer\\n \c00????00Version: \c00??????'+self.HOST_VER+'\\n \c00????00Developer: \c00??????Codermik\\n'}, 
+                             {'category': 'list_az_menu', 'title': _('A-Z'), 'url': self.getFullUrl('iplayer/a-z/'),'desc': '\c00????00 Info: \c00??????BBC iPlayer\\n \c00????00Version: \c00??????'+self.HOST_VER+'\\n \c00????00Developer: \c00??????Codermik\\n'}, 
+                             {'category': 'list_items', 'title': _('Most Popular'), 'url': self.getFullUrl('iplayer/group/most-popular'),'desc': '\c00????00 Info: \c00??????BBC iPlayer\\n \c00????00Version: \c00??????'+self.HOST_VER+'\\n \c00????00Developer: \c00??????Codermik\\n'}, 
+                             {'category': 'search', 'title': _('Search'), 'search_item': True, 'desc': '\c00????00 Info: \c00??????BBC iPlayer\\n \c00????00Version: \c00??????'+self.HOST_VER+'\\n \c00????00Developer: \c00??????Codermik\\n'}, 
+                             {'category': 'search_history', 'title': _('Search history'),'desc': '\c00????00 Info: \c00??????BBC iPlayer\\n \c00????00Version: \c00??????'+self.HOST_VER+'\\n \c00????00Developer: \c00??????Codermik\\n'}]
         self.otherIconsTemplate = 'https://raw.githubusercontent.com/vonH/plugin.video.iplayerwww/master/media/%s.png'
         self.reSrcset = re.compile('<source[^>]+?srcset=[\'"]([^\'^"]+?)[\'"]', re.I)
 
@@ -58,24 +64,23 @@ class BBCiPlayer(CBaseHostClass):
          ('M', 'm'), ('N', 'n'), ('O', 'o'), ('P', 'p'), ('Q', 'q'), ('R', 'r'),
          ('S', 's'), ('T', 't'), ('U', 'u'), ('V', 'v'), ('W', 'w'), ('X', 'x'),
          ('Y', 'y'), ('Z', 'z'), ('0-9', '0-9')]
-		 
+
         for title, url in characters:
-            params = {'good_for_fav': True, 'category': nextCategory, 'title': title, 'url': cItem['url'] + url}
+            params = {'good_for_fav': True, 'category': nextCategory, 'title': title, 'url': cItem['url'] + url,'desc': '\c00????00 Info: \c00??????BBC iPlayer\\n \c00????00Version: \c00??????'+self.HOST_VER+'\\n \c00????00Developer: \c00??????Codermik\\n'}
             self.addDir(params)
 
     def listItems2(self, cItem, nextCategory):
-
         sts, data = self.cm.getPage(cItem['url'], self.defaultParams)
         if not sts:
             return
-	
+
         cUrl = self.cm.meta['url']
         nextPage = ph.find(data, ('<a','>','Next Page'))[1]
         nextPage = self.getFullUrl(ph.search(nextPage, ph.A)[1], cUrl)
         data = ph.find(data, ('<ul', '>', 'gel-layout'), '</ul>', flags=0)[1]
         self.currList = self.getItems(cItem, nextCategory, data)		
         if nextPage:
-            params = MergeDicts(cItem, {'good_for_fav': False, 'title': _('Next page'), 'url': nextPage})
+            params = MergeDicts(cItem, {'good_for_fav': False, 'title': _('Next page'), 'url': nextPage, 'desc': '\c00????00 Info: \c00??????BBC iPlayer\\n \c00????00Version: \c00??????'+self.HOST_VER+'\\n \c00????00Developer: \c00??????Codermik\\n'})
             self.addDir(params)
 
     def getItems(self, cItem, nextCategory, data):
@@ -97,7 +102,7 @@ class BBCiPlayer(CBaseHostClass):
                 url = url.replace('/brand/', '/episodes/')
                 
             params = MergeDicts(cItem, {'good_for_fav': False, 'title': title, 'url': self.getFullUrl(url), 'desc': ('[/br]').join(desc), 'icon': self.getFullIconUrl(icon)})
-			
+
             if nextCategory != 'video' and ('/episodes/' in url or '/episode/' in url):
                 params['category'] = nextCategory
             else:
@@ -107,45 +112,58 @@ class BBCiPlayer(CBaseHostClass):
         return retList
 
     def listEpisodes(self, cItem):
-        printDBG('listEpisodes')
         sts, data = self.cm.getPage(cItem['url'], self.defaultParams)
-        if not sts:
-            return
-        cUrl = self.cm.meta['url']
-        nextPage = ph.find(data, ('<a', '>', 'Next Page'))[1]
-        nextPage = self.getFullUrl(ph.search(nextPage, ph.A)[1], cUrl)
+        if not sts: return
+        tmpurl = cItem['url']       
+        # if we are not already viewing all we need to grab the url and load it up.
+        hadViewAll = False
         viewAllUrl = ph.rfind(data, '>View all', '<a', flags=ph.I | ph.START_E | ph.END_E)[1]
         viewAllUrl = self.getFullUrl(ph.search(viewAllUrl, ph.A)[1], self.cm.meta['url'])
-        baseTitle = ph.clean_html(ph.find(data, ('<span', '>', 'text__title'), '</span>', flags=0)[1])
-        if not baseTitle:
-            baseTitle = ph.clean_html(ph.find(data, ('<h1', '>', 'header__title'), '</h1>', flags=0)[1])
         if viewAllUrl:
-            params = MergeDicts(cItem, {'good_for_fav': True, 'title': baseTitle, 'url': viewAllUrl, 'desc': _('View all episodes')})
-            self.addDir(params)
-        idx = 0
-        if '/episode/' not in cUrl:
-            marker = 'gel-layout__item'
-            data = ph.find(data, ('<div', '>', 'list__grid'), '</ul>')[1]
-        else:
-            marker = 'episode-section'
-        data = ph.findall(data, ('<li', '>', marker), '</li>')
-        for item in data:
-            idx += 1
-            title = ph.clean_html(ph.find(item, ('<div', '>', 'title'), '</div>', flags=0)[1])
-            if baseTitle and baseTitle not in title:
-                title = baseTitle + ' - ' + title
-            url = ph.search(item, ph.A)[1]
-            if not url and idx == 1 and '/episode/' in cUrl:
-                url = cItem['url']
-            if not url:
-                continue
-            icon = ph.search(item, self.reSrcset)[0]
-            params = MergeDicts(cItem, {'good_for_fav': True, 'title': title, 'url': self.getFullUrl(url), 'desc': '', 'icon': self.getFullIconUrl(icon)})
-            self.addVideo(params)
-
-        if not self.currList and '/episode/' in cUrl:
-            params = MergeDicts(cItem, {'good_for_fav': True})
-            self.addVideo(params)
+            sts, data = self.cm.getPage(viewAllUrl, self.defaultParams)
+            if not sts: return
+            tmpurl = viewAllUrl
+            hadViewAll = True
+        nextPage = ph.find(data, ('<a', '>', 'Next Page'))[1]
+        nextPage = self.getFullUrl(ph.search(nextPage, ph.A)[1], tmpurl)
+        if 'class="button series-nav__button series-nav__button' in data:
+            # we have a season navigation
+            block = self.cm.ph.getAllItemsBeetwenNodes(data,'class="button series-nav__button series-nav__button', ('</li>'))
+            for series in block:
+                seriesTitle = self.cm.ph.getAllItemsBeetwenNodes(series,'<span class="button__text typo typo--bullfinch typo--bold">', '</span>',False)[0]
+                self.addMarker({'title':seriesTitle,'desc':seriesTitle})  
+                seriesUrl = self.cm.ph.getSearchGroups(series, 'href="([^"]+?)"')[0]
+                if seriesUrl == '': seriesUrl = tmpurl    # add landing url (season 1)  
+                else: seriesUrl = self.MAIN_URL + seriesUrl[:0] + seriesUrl[1:]
+                icon = ph.search(series, self.reSrcset)[0]
+                # get the page as per the url, read the episodes.
+                sts, data = self.cm.getPage(seriesUrl, self.defaultParams)
+                if not sts: return
+                episodes = self.cm.ph.getAllItemsBeetwenNodes(data,'<ul class="gel-layout">', '</ul>')[0]
+                episodes = self.cm.ph.getAllItemsBeetwenNodes(episodes,'<li class="grid__item', '</li>')  
+                for episode in episodes:
+                    tmpTitle = self.cleanHtmlStr(self.cm.ph.getAllItemsBeetwenNodes(episode,'<div class="content-item__title typo typo--skylark typo--bold">', '</div>', False)[0])
+                    title = '\c00????00%s' %tmpTitle
+                    videoUrl = self.cm.ph.getSearchGroups(episode, 'href="([^"]+?)"')[0]
+                    videoUrl = self.MAIN_URL + videoUrl[:0] + videoUrl[1:]                    
+                    desc = self.cm.ph.getAllItemsBeetwenNodes(episode,'<div class="content-item__description typo typo--bullfinch">', '<',False)[0] + '...'
+                    desc = '\c00????00Description: \c00??????'+desc
+                    params = MergeDicts(cItem, {'good_for_fav': True, 'title': title, 'url': videoUrl, 'desc': desc, 'icon': self.getFullIconUrl(icon)})
+                    self.addVideo(params)
+        elif '/episodes/' in tmpurl and hadViewAll:
+            episodes = self.cm.ph.getAllItemsBeetwenNodes(data,'<ul class="gel-layout">', '</ul>')[0]
+            episodes = self.cm.ph.getAllItemsBeetwenNodes(episodes,'<li class="grid__item', '</li>')  
+            seriesTitle = self.cm.ph.getAllItemsBeetwenNodes(data,'<h1 class="hero-header__title typo typo--bold typo--buzzard">', '</h1>',False)[0]
+            icon = ph.search(data, self.reSrcset)[0]
+            for episode in episodes:
+                tmpTitle = self.cleanHtmlStr(self.cm.ph.getAllItemsBeetwenNodes(episode,'<div class="content-item__title typo typo--skylark typo--bold">', '</div>',False)[0])
+                title = '%s  \c00????00[%s]'%(seriesTitle, tmpTitle)
+                videoUrl = self.cm.ph.getSearchGroups(episode, 'href="([^"]+?)"')[0]
+                videoUrl = self.MAIN_URL + videoUrl[:0] + videoUrl[1:]
+                desc = self.cm.ph.getAllItemsBeetwenNodes(episode,'<div class="content-item__description typo typo--bullfinch">', '<',False)[0] + '...'
+                desc = '\c00????00Description: \c00??????'+desc
+                params = MergeDicts(cItem, {'good_for_fav': True, 'title': title, 'url': videoUrl, 'desc': desc, 'icon': self.getFullIconUrl(icon)})
+                self.addVideo(params)
         if nextPage:
             params = MergeDicts(cItem, {'good_for_fav': False, 'title': _('Next page'), 'url': nextPage})
             self.addDir(params)
@@ -182,13 +200,13 @@ class BBCiPlayer(CBaseHostClass):
          ('bbc_one_west', 'BBC One West'),
          ('bbc_one_west_midlands', 'BBC One West Midlands'),
          ('bbc_one_yorks', 'BBC One Yorks')]
-		 
+
         for id, title in channel_list:
-            params = {'good_for_fav': True, 'title': title, 'url': self.getFullUrl('vpid/' + id + '/'), 'icon': self.otherIconsTemplate % id}
+            params = {'good_for_fav': True, 'title': title, 'url': self.getFullUrl('vpid/' + id + '/'), 'icon': self.otherIconsTemplate % id, 'desc': '\c00????00 Info: \c00??????BBC iPlayer\\n \c00????00Version: \c00??????'+self.HOST_VER+'\\n \c00????00Developer: \c00??????Codermik\\n'}
             self.addVideo(params)
 
     def listChannels(self, cItem, nextCategory):
-        params = {'good_for_fav': True, 'category': 'live_streams', 'title': _('Live'), 'icon': 'https://raw.githubusercontent.com/vonH/plugin.video.iplayerwww/master/media/live.png'}
+        params = {'good_for_fav': True, 'category': 'live_streams', 'title': _('Live'), 'icon': 'https://raw.githubusercontent.com/vonH/plugin.video.iplayerwww/master/media/live.png', 'desc': '\c00????00 Info: \c00??????BBC iPlayer\\n \c00????00Version: \c00??????'+self.HOST_VER+'\\n \c00????00Developer: \c00??????Codermik\\n'}
         self.addDir(params)
         channel_list = [
          ('bbcone', 'bbc_one_hd', 'BBC One'),
@@ -201,9 +219,9 @@ class BBCiPlayer(CBaseHostClass):
          ('tv/bbcparliament', 'bbc_parliament', 'BBC Parliament'),
          ('tv/bbcalba', 'bbc_alba', 'Alba'),
          ('tv/s4c', 's4cpbs', 'S4C')]
-		 
+
         for url, icon, title in channel_list:
-            params = {'good_for_fav': True, 'category': nextCategory, 'title': title, 'url': self.getFullUrl(url), 'icon': self.otherIconsTemplate % icon}
+            params = {'good_for_fav': True, 'category': nextCategory, 'title': title, 'url': self.getFullUrl(url), 'icon': self.otherIconsTemplate % icon, 'desc': '\c00????00 Info: \c00??????BBC iPlayer\\n \c00????00Version: \c00??????'+self.HOST_VER+'\\n \c00????00Developer: \c00??????Codermik\\n'}
             self.addDir(params)
 
     def listChannelMenu(self, cItem, nextCategory1, nextCategory2):
@@ -222,9 +240,9 @@ class BBCiPlayer(CBaseHostClass):
                 tmp = self.getItems(cItem, nextCategory2, tmp)
                 if not tmp:
                     continue
-                self.addDir(MergeDicts(cItem, {'good_for_fav': False, 'title': sTtile, 'category': 'sub_items', 'sub_items': tmp}))
+                self.addDir(MergeDicts(cItem, {'good_for_fav': False, 'title': sTtile, 'category': 'sub_items', 'sub_items': tmp, 'desc': '\c00????00 Info: \c00??????BBC iPlayer\\n \c00????00Version: \c00??????'+self.HOST_VER+'\\n \c00????00Developer: \c00??????Codermik\\n'}))
 
-        self.addDir(MergeDicts(cItem, {'good_for_fav': True, 'title': cItem['title'] + ' ' + _('A-Z'), 'category': nextCategory1, 'url': cItem['url'] + '/a-z'}))
+        self.addDir(MergeDicts(cItem, {'good_for_fav': True, 'title': cItem['title'] + ' ' + _('A-Z'), 'category': nextCategory1, 'url': cItem['url'] + '/a-z', 'desc': '\c00????00 Info: \c00??????BBC iPlayer\\n \c00????00Version: \c00??????'+self.HOST_VER+'\\n \c00????00Developer: \c00??????Codermik\\n'}))
 
     def listMainMenu(self, cItem, nextCategory):
         printDBG('BBCiPlayer.listMainMenu')
@@ -242,7 +260,7 @@ class BBCiPlayer(CBaseHostClass):
             for item in data:
                 url = self.getFullUrl(item['href'], cUrl)
                 title = ph.clean_html(item['title'])
-                self.addDir(MergeDicts(cItem, {'category': nextCategory, 'title': title, 'url': url}))
+                self.addDir(MergeDicts(cItem, {'category': nextCategory, 'title': title, 'url': url, 'desc': '\c00????00 Info: \c00??????BBC iPlayer\\n \c00????00Version: \c00??????'+self.HOST_VER+'\\n \c00????00Developer: \c00??????Codermik\\n'}))
 
         except Exception:
             printExc()
@@ -259,7 +277,7 @@ class BBCiPlayer(CBaseHostClass):
         for idx in range(1, len(data), 2):
             url = baseUrl + ph.getattr(data[(idx - 1)], 'value')
             title = ph.clean_html(data[idx])
-            self.addDir(MergeDicts(cItem, {'good_for_fav': True, 'title': title, 'category': nextCategory, 'url': url}))
+            self.addDir(MergeDicts(cItem, {'good_for_fav': True, 'title': title, 'category': nextCategory, 'url': url, 'desc': '\c00????00 Info: \c00??????BBC iPlayer\\n \c00????00Version: \c00??????'+self.HOST_VER+'\\n \c00????00Developer: \c00??????Codermik\\n'}))
 
     def listItems(self, cItem, nextCategory):
         printDBG('BBCiPlayer.listItems')
@@ -272,31 +290,31 @@ class BBCiPlayer(CBaseHostClass):
                 url += '?'
             url += 'page=%s' % page
         sts, data = self.cm.getPage(url, self.defaultParams)
-		
+
         if not sts:
             return
-			
+
         printDBG('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
         printDBG(data)
         printDBG('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
         t1 = '<div id="tvip-footer-wrap">'
         t2 = '<div class="footer js-footer">'
-		
+
         if t1 in data:
             endTag = t1
         else:
             endTag = t2
-			
+
         nextPage = self.cm.ph.getDataBeetwenNodes(data, ('<ol', '>', 'pagination'), ('</ol',
                                                                                      '>'))[1]
         if nextPage != '':
             nextPage = self.cm.ph.getSearchGroups(nextPage, 'page=(%s)[^0-9]' % (page + 1))[0]
-			
+
             if '' != nextPage:
                 nextPage = True
             else:
                 nextPage = False
-				
+
             endTag = '<ol[^>]+?pagination[^>]+?>'
         else:
             mTag = '<div class="paginate">'
@@ -316,13 +334,13 @@ class BBCiPlayer(CBaseHostClass):
                     else:
                         nextPage = False
                     endTag = mTag
-					
+
         startTag = re.compile('<li[^>]+?(?:class=[\'"]list-item|list__grid__item|layout__item)[^>]*?>')
         data = self.cm.ph.getDataBeetwenReMarkers(data, startTag, re.compile(endTag), withMarkers=False)[1]
         data = startTag.split(data)
         subTitleReOb1 = re.compile('<h2[^>]+?class="[^"]*?subtitle[^"]*?"')
         subTitleReOb2 = re.compile('</h2>')
-		
+
         for item in data:
             title = ph.clean_html(self.cm.ph.getDataBeetwenNodes(item, ('<div', '>','title'), ('</div','>'))[1])
             if title == '':
@@ -360,7 +378,7 @@ class BBCiPlayer(CBaseHostClass):
             if '/iplayer' not in url:
                 printDBG('+++++++++++++++ URL NOT SUPPORTED AT NOW url[%s], title[%s]' % (url, title))
                 continue
-            params = {'good_for_fav': True, 'title': title, 'url': self.getFullUrl(url), 'icon': self.getFullIconUrl(icon), 'desc': ('[/br]').join(descTab)}
+            params = {'good_for_fav': True, 'title': title, 'url': self.getFullUrl(url), 'icon': self.getFullIconUrl(icon), 'desc': ('[/br]').join(descTab),'desc': '\c00????00 Info: \c00??????BBC iPlayer\\n \c00????00Version: \c00??????'+self.HOST_VER+'\\n \c00????00Developer: \c00??????Codermik\\n'}
             if type == 'video':
                 self.addVideo(params)
             else:
@@ -455,7 +473,7 @@ class BBCiPlayer(CBaseHostClass):
                 self.listsHistory({'name': 'history', 'category': 'search'}, 'desc', _('Type: '))
             else:
                 printExc()
-				
+
         CBaseHostClass.endHandleService(self, index, refresh)
         return
 

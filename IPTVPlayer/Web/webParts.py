@@ -4,7 +4,7 @@
 #
 # @Codermik release, based on @Samsamsam's E2iPlayer public.
 # Released with kind permission of Samsamsam.
-# All code developed by Samsamsam is the property of the Samsamsam and the E2iPlayer project,  
+# All code developed by Samsamsam is the property of Samsamsam and the E2iPlayer project,  
 # all other work is © E2iStream Team, aka Codermik.  TSiPlayer is © Rgysoft, his group can be
 # found here:  https://www.facebook.com/E2TSIPlayer/
 #
@@ -63,21 +63,21 @@ def IncludeMENU( MenuStatusMSG = '', ShowCancelButton = False):
 	if isActiveHostInitiated():
 		tempText = """
   <div class="topbar">
-    <a href="http://iptvplayer.vline.pl/" target="_blank"> <img border="0" alt="IPTVPlayer" src="./icons/iptvlogo.png" width="60" height="24"></a>
+    <a href="http://softrix.co.uk/istream/" target="_blank"> <img border="0" alt="IPTVPlayer" src="./icons/iptvlogo.png" width="60" height="24"></a>
     <a href="/iptvplayer/usehost" >%s</a>
     <a href="/iptvplayer/downloader" >%s</a>
     <a href="/iptvplayer/logs" >%s</a>
     <a href="/iptvplayer/?resetState=1" >%s</a>
   </div>
   <div class="bottombar">
-    <a href="https://gitlab.com/iptvplayer-for-e2/iptvplayer-for-e2/commits/master" target="_blank" >IPTVPlayer %s: <b><font color="#A9F5F2">%s</font></b></a>
+    <a href="http://softrix.co.uk/istream/" target="_blank" >IPTVPlayer %s: <b><font color="#A9F5F2">%s</font></b></a>
     <a>, %s: <b>%s</b></a/>
   </div>
 """ % ( _('Active host'), _('Download manager'), _('Logs'), _('Reset State'), _('version'), IPTV_VERSION, _('Web interface version'), settings.WebInterfaceVersion )
 	else:
 		tempText = """
   <div class="topbar">
-    <a href="http://iptvplayer.vline.pl/" target="_blank"> <img border="0" alt="IPTVPlayer" src="./icons/iptvlogo.png" width="60" height="24"></a>
+    <a href="http://softrix.co.uk/istream/" target="_blank"> <img border="0" alt="IPTVPlayer" src="./icons/iptvlogo.png" width="60" height="24"></a>
     <a href="/iptvplayer/" >%s</a>
     <a href="/iptvplayer/hosts" ">%s</a>
     <a href="/iptvplayer/search" ">%s</a>
@@ -87,7 +87,7 @@ def IncludeMENU( MenuStatusMSG = '', ShowCancelButton = False):
     <a href="/iptvplayer/?resetState=1" >%s</a>
   </div>
   <div class="bottombar">
-    <a href="https://gitlab.com/iptvplayer-for-e2/iptvplayer-for-e2/commits/master" target="_blank" >E2iStream %s: <b><font color="#A9F5F2">%s</font></b></a>
+    <a href="http://softrix.co.uk/istream/" target="_blank" >E2iStream %s: <b><font color="#A9F5F2">%s</font></b></a>
     <a>, %s: <b>%s</b></a/>
   </div>
 """ % ( _('Information'), _('Selected hosts'), _('Search'), _('Download manager'), _('Settings'), _('Logs'), _('Reset State'), _('version'), IPTV_VERSION, _('Web interface version'), settings.WebInterfaceVersion )

@@ -4,7 +4,7 @@
 #
 # @Codermik release, based on @Samsamsam's E2iPlayer public.
 # Released with kind permission of Samsamsam.
-# All code developed by Samsamsam is the property of the Samsamsam and the E2iPlayer project,  
+# All code developed by Samsamsam is the property of Samsamsam and the E2iPlayer project,  
 # all other work is © E2iStream Team, aka Codermik.  TSiPlayer is © Rgysoft, his group can be
 # found here:  https://www.facebook.com/E2TSIPlayer/
 #
@@ -12,6 +12,12 @@
 #
 #
 
+#
+#  E2iPlayer On Screen Keyboard based on Windows keyboard layouts
+#
+#  $Id$
+#
+# 
 from Screens.Screen import Screen
 from Components.ActionMap import NumberActionMap
 from enigma import ePoint, gFont, gRGB, eListboxPythonMultiContent, eListbox, gFont, RT_HALIGN_LEFT, RT_HALIGN_RIGHT, RT_VALIGN_CENTER, getDesktop
@@ -587,7 +593,7 @@ class E2iVirtualKeyBoard(Screen):
                         text = self.currentVKLayout['deadkeys'][self.deadKey][val]
                     else:
                         text = self.deadKey + val
-                    self.deadKey = ''
+                    self.deadKey = u''
                     updateKeysLabels = True
                 elif val in self.currentVKLayout['deadkeys']:
                     self.deadKey = val
@@ -600,7 +606,7 @@ class E2iVirtualKeyBoard(Screen):
 
             if updateKeysLabels:
                 self.updateKeysLabels()
-            return ret			
+            return ret
         return 0
 
     def loadKeyboardLayout(self, vkLayoutId, allowDownload=True):

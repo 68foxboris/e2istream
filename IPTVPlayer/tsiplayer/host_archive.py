@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 from Plugins.Extensions.IPTVPlayer.tools.iptvtools import printDBG
-from Plugins.Extensions.IPTVPlayer.tsiplayer.tstools import TSCBaseHostClass
+from Plugins.Extensions.IPTVPlayer.tsiplayer.libs.tstools import TSCBaseHostClass
 import re
 
 def getinfo():
@@ -8,9 +8,9 @@ def getinfo():
 	info_['name']='Quran (Archive.Org)'
 	info_['version']='1.3 20/05/2019'
 	info_['dev']='RGYSoft'
-	info_['cat_id']='4'
+	info_['cat_id']='204'
 	info_['desc']='تسجيلات لتفسير و تلاوة القرآن'
-	info_['icon']='https://s3.amazonaws.com/peoplepng/wp-content/uploads/2018/05/24174605/Quran-PNG-Photo.png'
+	info_['icon']='https://img.yumpu.com/62618769/1/358x516/holy-quran.jpg?quality=85'
 	info_['recherche_all']='0'
 	info_['update']='Add Rokia Chariya'
 

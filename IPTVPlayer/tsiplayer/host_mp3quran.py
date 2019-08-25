@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 from Plugins.Extensions.IPTVPlayer.tools.iptvtools import printDBG
 from Plugins.Extensions.IPTVPlayer.libs import ph
-from Plugins.Extensions.IPTVPlayer.tsiplayer.tstools import TSCBaseHostClass,tunisia_gouv
+from Plugins.Extensions.IPTVPlayer.tsiplayer.libs.tstools import TSCBaseHostClass,tunisia_gouv
 from Plugins.Extensions.IPTVPlayer.libs.e2ijson import loads as json_loads
 from Components.config import config
 import re
@@ -15,7 +15,7 @@ def getinfo():
 	info_['name']='MP3Quran.Net'
 	info_['version']='1.0 05/05/2019'
 	info_['dev']='RGYSoft'
-	info_['cat_id']='4'
+	info_['cat_id']='204'
 	info_['desc']='Quran Audio Library'
 	info_['icon']='https://www.mp3quran.net/images/quraan-logo.png'
 	info_['recherche_all']='0'
@@ -45,28 +45,31 @@ class TSIPHost(TSCBaseHostClass):
 		Url='https://www.mp3quran.net/includes/ajax.php'
 		post_data={'lang_id':lng_id,'search':'all','action':'filterByLetter'}
 		sts, data = self.getPage(Url,post_data=post_data) 	
-		data_ = re.findall('reciter-item.*?id="(.*?)".*?reciter-name.*?>(.*?)<', data, re.S)
-		for (id_,name) in data_:
-			self.addDir({'import':cItem['import'],'category' :'host2','title':name,'icon':cItem['icon'],'rec_id':id_,'mode': '40','sub_mode':lng_id})
+		if sts:
+			data_ = re.findall('reciter-item.*?id="(.*?)".*?reciter-name.*?>(.*?)<', data, re.S)
+			for (id_,name) in data_:
+				self.addDir({'import':cItem['import'],'category' :'host2','title':name,'icon':cItem['icon'],'rec_id':id_,'mode': '40','sub_mode':lng_id})
 						
 	def showmenu2(self,cItem):
 		url='http://api.mp3quran.net/radios/get_radios.php'
 		sts, data = self.getPage(url) 
-		data = json_loads(data)
-		for elm in data['language']:
-			id_=elm['id']
-			language=elm['language']
-			radio_url=elm['radio_url']
-			self.addDir({'import':cItem['import'],'category' :'host2','title':language,'url':radio_url,'icon':cItem['icon'],'mode': '22'})
+		if sts:
+			data = json_loads(data)
+			for elm in data['language']:
+				id_=elm['id']
+				language=elm['language']
+				radio_url=elm['radio_url']
+				self.addDir({'import':cItem['import'],'category' :'host2','title':language,'url':radio_url,'icon':cItem['icon'],'mode': '22'})
 			
 	def showmenu3(self,cItem):
 		url=cItem['url']
-		sts, data = self.getPage(url) 
-		data = json_loads(data)
-		for elm in data['radios']:
-			name=elm['name']
-			radio_url=elm['radio_url']
-			self.addAudio({'import':cItem['import'],'title':name,'url':radio_url,'icon':cItem['icon'],'hst': 'direct'})
+		sts, data = self.getPage(url)
+		if sts: 
+			data = json_loads(data)
+			for elm in data['radios']:
+				name=elm['name']
+				radio_url=elm['radio_url']
+				self.addAudio({'import':cItem['import'],'title':name,'url':radio_url,'icon':cItem['icon'],'hst': 'direct'})
 
 		
 		
@@ -76,12 +79,13 @@ class TSIPHost(TSCBaseHostClass):
 		page=cItem.get('page',1)
 		url_=Url+'?page='+str(page)
 		sts, data = self.getPage(url_) 	
-		data_ = re.findall('class="thumbnail">.*?href="(.*?)".*?src="(.*?)".*?<h5>(.*?)</h5>', data, re.S)
-		for (url,image,titre) in data_:
-			url='https://videos.mp3quran.net'+url.replace('//','/')
-			image='https://videos.mp3quran.net'+image
-			self.addVideo({'import':cItem['import'],'category' :'host2','title':titre,'url':url,'icon':image,'hst': 'tshost'})			
-		self.addDir({'import':cItem['import'],'category' : 'host2','title':'Next','url':Url,'page':page+1,'mode':'30'})
+		if sts:
+			data_ = re.findall('class="thumbnail">.*?href="(.*?)".*?src="(.*?)".*?<h5>(.*?)</h5>', data, re.S)
+			for (url,image,titre) in data_:
+				url='https://videos.mp3quran.net'+url.replace('//','/')
+				image='https://videos.mp3quran.net'+image
+				self.addVideo({'import':cItem['import'],'category' :'host2','title':titre,'url':url,'icon':image,'hst': 'tshost'})			
+			self.addDir({'import':cItem['import'],'category' : 'host2','title':'Next','url':Url,'page':page+1,'mode':'30'})
 
 
 			
@@ -90,24 +94,27 @@ class TSIPHost(TSCBaseHostClass):
 		Url='https://www.mp3quran.net/includes/ajax.php'
 		post_data={'readerID':rec_id,'action':'reader_slider_by_alias'}
 		sts, data = self.getPage(Url,post_data=post_data) 	
-		data = json_loads(data)
-		id_=data['id']
-		name_=data['name']
-		
-		
-		Url='https://www.mp3quran.net/includes/reciter_page.php'
-		post_data={'alias':rec_id,'action':'ajaxreader'}
-		sts, data = self.getPage(Url,post_data=post_data) 	
-		data_ = re.findall('"ms_weekly_box">.*?data-name="(.*?)".*?data-media="(.*?)".*?<h3>(.*?)</h3>.*?<p>(.*?)<', data, re.S)
-		for (desc,url,name,time_) in data_:
-			self.addAudio({'import':cItem['import'],'title':ph.clean_html(name),'url':url,'icon':cItem['icon'],'desc':'duration: \c00????00'+time_+'\\n \c00??????Reciters: \c00????00'+desc,'hst':'direct'})			
-		
-		Url='https://www.mp3quran.net/includes/ajax.php'
-		post_data={'loadReaderId':id_,'page':'NaN','classification_id':'1','action':'loadMoreByReader'}
-		sts, data = self.getPage(Url,post_data=post_data) 	
-		data_ = re.findall('"ms_weekly_box">.*?data-name="(.*?)".*?data-media="(.*?)".*?<h3>(.*?)</h3>.*?<p>(.*?)<', data, re.S)
-		for (desc,url,name,time_) in data_:
-			self.addAudio({'import':cItem['import'],'title':ph.clean_html(name),'url':url,'icon':cItem['icon'],'desc':'duration: \c00????00'+time_+'\\n \c00??????Reciters: \c00????00'+desc,'hst':'direct'})			
+		if sts:
+			data = json_loads(data)
+			id_=data['id']
+			name_=data['name']
+			
+			
+			Url='https://www.mp3quran.net/includes/reciter_page.php'
+			post_data={'alias':rec_id,'action':'ajaxreader'}
+			sts, data = self.getPage(Url,post_data=post_data) 
+			if sts:	
+				data_ = re.findall('"ms_weekly_box">.*?data-name="(.*?)".*?data-media="(.*?)".*?<h3>(.*?)</h3>.*?<p>(.*?)<', data, re.S)
+				for (desc,url,name,time_) in data_:
+					self.addAudio({'import':cItem['import'],'title':ph.clean_html(name),'url':url,'icon':cItem['icon'],'desc':'duration: \c00????00'+time_+'\\n \c00??????Reciters: \c00????00'+desc,'hst':'direct'})			
+				
+				Url='https://www.mp3quran.net/includes/ajax.php'
+				post_data={'loadReaderId':id_,'page':'NaN','classification_id':'1','action':'loadMoreByReader'}
+				sts, data = self.getPage(Url,post_data=post_data)
+				if sts: 	
+					data_ = re.findall('"ms_weekly_box">.*?data-name="(.*?)".*?data-media="(.*?)".*?<h3>(.*?)</h3>.*?<p>(.*?)<', data, re.S)
+					for (desc,url,name,time_) in data_:
+						self.addAudio({'import':cItem['import'],'title':ph.clean_html(name),'url':url,'icon':cItem['icon'],'desc':'duration: \c00????00'+time_+'\\n \c00??????Reciters: \c00????00'+desc,'hst':'direct'})			
 		
 			
 	def getPage(self,baseUrl, addParams = {}, post_data = None):
@@ -122,11 +129,12 @@ class TSIPHost(TSCBaseHostClass):
 		urlTab = []
 		URL=cItem['url']	
 		sts, data = self.getPage(URL)
-		_data = re.findall('video-grid">.*?src="(.*?)"', data, re.S)
-		if _data:
-			url='https://videos.mp3quran.net'+_data[0]
-			url=url.replace('&#39;',"'")
-			urlTab.append({'name':cItem['title'], 'url':url, 'need_resolve':0})
+		if sts:
+			_data = re.findall('video-grid">.*?src="(.*?)"', data, re.S)
+			if _data:
+				url='https://videos.mp3quran.net'+_data[0]
+				url=url.replace('&#39;',"'")
+				urlTab.append({'name':cItem['title'], 'url':url, 'need_resolve':0})
 		return urlTab	
 
 

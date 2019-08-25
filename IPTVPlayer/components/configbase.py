@@ -4,7 +4,7 @@
 #
 # @Codermik release, based on @Samsamsam's E2iPlayer public.
 # Released with kind permission of Samsamsam.
-# All code developed by Samsamsam is the property of the Samsamsam and the E2iPlayer project,  
+# All code developed by Samsamsam is the property of Samsamsam and the E2iPlayer project,  
 # all other work is © E2iStream Team, aka Codermik.  TSiPlayer is © Rgysoft, his group can be
 # found here:  https://www.facebook.com/E2TSIPlayer/
 #
@@ -12,6 +12,7 @@
 #
 #
 
+#
 #  Konfigurator dla iptv 2013
 #  autorzy: j00zek, samsamsam
 #
@@ -89,7 +90,7 @@ class ConfigBaseWidget(Screen, ConfigListScreen):
         self.onChangedEntry = [ ]
         self.list = [ ]
         ConfigListScreen.__init__(self, self.list, session = session, on_change = self.changedEntry)
-        self.setup_title = (_("E2iStream - settings"))
+        self.setup_title = (_("E2iStream - Settings"))
 
         self["key_green"] = Label(_("Save"))
         self["key_ok"] = Label(_(" "))
@@ -138,7 +139,7 @@ class ConfigBaseWidget(Screen, ConfigListScreen):
             self["config"].onSelectionChanged.remove(self.onSelectionChanged)
 
     def layoutFinished(self):
-        self.setTitle(_("E2iStream - settings"))
+        self.setTitle(_("E2iStream - Settings"))
         if not self.onSelectionChanged in self["config"].onSelectionChanged:
             self["config"].onSelectionChanged.append(self.onSelectionChanged)
         self.runSetup()

@@ -1,19 +1,20 @@
 # -*- coding: utf8 -*-
 from Plugins.Extensions.IPTVPlayer.tools.iptvtools import printDBG
 from Plugins.Extensions.IPTVPlayer.libs.e2ijson import loads as json_loads
-from Plugins.Extensions.IPTVPlayer.tsiplayer.tstools import TSCBaseHostClass
+from Plugins.Extensions.IPTVPlayer.tsiplayer.libs.tstools import TSCBaseHostClass
 
 import re
 
 def getinfo():
 	info_={}
 	info_['name']='كرتون+ (Android App)'
-	info_['version']='1.0 16/04/2019'
+	info_['version']='1.1 07/07/2019'
 	info_['dev']='RGYSoft'
-	info_['cat_id']='3'
+	info_['cat_id']='203'
 	info_['desc']='افلام و مسلسلات كرتون'
 	info_['icon']='https://image.winudf.com/v2/image/Y2FydG9vbnBsdXNwbHVzLmNvbS5jYXJ0b29ucGx1c3BsdXNfc2NyZWVuXzBfMTUyNTIwNzg4NF8wNTc/screen-0.jpg?h=800&fakeurl=1&type=.jpg'
 	info_['recherche_all']='0'
+	info_['update']='Bugs Fix'
 	return info_
 
 
@@ -39,20 +40,21 @@ class TSIPHost(TSCBaseHostClass):
 		cat_id=cItem.get('sub_mode','1')
 		URL='https://wiiudown.com/apps/anime/byCat.php?cid='+cat_id
 		sts, data = self.getPage(URL)
-		data = json_loads(data)
-		for elm in 	data:
-			titre    = elm['Title']
-			name     = elm['STableName']
-			img      = elm['Icon']
-			nbSeason = elm['SSeasons']
-			nbEp=elm['Total']
-			Desc='\c00????00Saisons: \c00??????'+nbSeason+'\\n'
-			Desc=Desc+'\c00????00Episodes: \c00??????'+nbEp+'\\n'
-			if name!='mymoreapps':
-				if 	int(nbSeason)>1:
-					self.addDir({'import':cItem['import'],'category' : 'host2','title':titre,'url':name,'icon':img,'desc':Desc,'mode':'21','nbSeason':nbSeason,'good_for_fav':True})
-				else:	
-					self.addDir({'import':cItem['import'],'category' : 'host2','title':titre,'url':name,'icon':img,'desc':Desc,'mode':'30','good_for_fav':True})
+		if sts:
+			data = json_loads(data)
+			for elm in 	data:
+				titre    = elm['Title']
+				name     = elm['STableName']
+				img      = elm['Icon']
+				nbSeason = elm['SSeasons']
+				nbEp=elm['Total']
+				Desc='\c00????00Saisons: \c00??????'+nbSeason+'\\n'
+				Desc=Desc+'\c00????00Episodes: \c00??????'+nbEp+'\\n'
+				if name!='mymoreapps':
+					if 	int(nbSeason)>1:
+						self.addDir({'import':cItem['import'],'category' : 'host2','title':titre,'url':name,'icon':img,'desc':Desc,'mode':'21','nbSeason':nbSeason,'good_for_fav':True})
+					else:	
+						self.addDir({'import':cItem['import'],'category' : 'host2','title':titre,'url':name,'icon':img,'desc':Desc,'mode':'30','good_for_fav':True})
 						
 
 	def showanim2(self,cItem):
@@ -65,34 +67,35 @@ class TSIPHost(TSCBaseHostClass):
 		anime=cItem.get('url','')
 		URL='https://wiiudown.com/apps/anime/byShow.php?show='+anime
 		sts, data = self.getPage(URL)
-		data = json_loads(data)
-		for elm in 	data:
-			titre = elm['Title']
-			Views = elm['Views']
-			img   = elm['Poster']
-			url   = elm['Code']
-			
-			srv1  = elm.get('Server_1','')
-			srv2  = elm.get('Server_2','')
-			srv3  = elm.get('Server_3','')
-			srv4  = elm.get('Server_4','')
-			srv5  = elm.get('Server_5','')
-			servers = [srv1,srv2,srv3,srv4,srv5]
-			
-			Desc='\c00????00Views: \c00??????'+Views+'\\n'
-			img='https://wiiudown.com/apps/'+anime+'/Poster/'+img+'.jpg'	
-			url_data = re.findall('url=(.*)', url, re.S)
-			if url_data:
-				URL_=url_data[0]
-			else: URL_=url
-			if (srv1!='')or(srv2!='')or(srv3!='')or(srv4!='')or(srv5!=''):
-				hst='tshost'
-				URL_=servers
-			elif ('youtube' in URL_) or ('dailymotion' in URL_):
-				hst='none'
-			else:
-				hst='direct'	
-			self.addVideo({'import':cItem['import'],'category' : 'host2','title':titre,'url':URL_,'icon':img,'hst':hst,'good_for_fav':True})	
+		if sts:
+			data = json_loads(data)
+			for elm in 	data:
+				titre = elm['Title']
+				Views = elm['Views']
+				img   = elm['Poster']
+				url   = elm['Code']
+				
+				srv1  = elm.get('Server_1','')
+				srv2  = elm.get('Server_2','')
+				srv3  = elm.get('Server_3','')
+				srv4  = elm.get('Server_4','')
+				srv5  = elm.get('Server_5','')
+				servers = [srv1,srv2,srv3,srv4,srv5]
+				
+				Desc='\c00????00Views: \c00??????'+Views+'\\n'
+				img='https://wiiudown.com/apps/'+anime+'/Poster/'+img+'.jpg'	
+				url_data = re.findall('url=(.*)', url, re.S)
+				if url_data:
+					URL_=url_data[0]
+				else: URL_=url
+				if (srv1!='')or(srv2!='')or(srv3!='')or(srv4!='')or(srv5!=''):
+					hst='tshost'
+					URL_=servers
+				elif ('youtube' in URL_) or ('dailymotion' in URL_):
+					hst='none'
+				else:
+					hst='direct'	
+				self.addVideo({'import':cItem['import'],'category' : 'host2','title':titre,'url':URL_,'icon':img,'hst':hst,'good_for_fav':True})	
 
 
 	def get_links(self,cItem): 	
@@ -110,12 +113,13 @@ class TSIPHost(TSCBaseHostClass):
 	def getVideos(self,videoUrl):
 		urlTab=[]	
 		sts, data = self.getPage(videoUrl)
-		url_data = re.findall('file".*?"(.*?)"', data, re.S)
-		if not url_data:
-			url_data = re.findall("file'.*?'(.*?)'", data, re.S)			
-		if url_data:
-			if url_data[0].strip()!='':	
-				urlTab.append((url_data[0].strip(),'0'))	
+		if sts:
+			url_data = re.findall('file".*?"(.*?)"', data, re.S)
+			if not url_data:
+				url_data = re.findall("file'.*?'(.*?)'", data, re.S)			
+			if url_data:
+				if url_data[0].strip()!='':	
+					urlTab.append((url_data[0].strip(),'0'))	
 		return urlTab	
 			
 	def start(self,cItem):

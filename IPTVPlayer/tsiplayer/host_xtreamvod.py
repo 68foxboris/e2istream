@@ -2,7 +2,7 @@
 from Plugins.Extensions.IPTVPlayer.tools.iptvtools import printDBG
 from Plugins.Extensions.IPTVPlayer.tools.iptvtypes import strwithmeta
 from Plugins.Extensions.IPTVPlayer.libs.e2ijson import loads as json_loads
-from Plugins.Extensions.IPTVPlayer.tsiplayer.tstools import TSCBaseHostClass,xtream_get_conf
+from Plugins.Extensions.IPTVPlayer.tsiplayer.libs.tstools import TSCBaseHostClass,xtream_get_conf
 
 import re
 
@@ -12,7 +12,7 @@ def getinfo():
 	info_['name']='Xtream IPTV (VOD)'
 	info_['version']='1.0 24/04/2019'
 	info_['dev']='RGYSoft'
-	info_['cat_id']='6'
+	info_['cat_id']='101'
 	info_['desc']='مشاهدة القنوات مباشر من اشتراكات xtream'
 	info_['icon']='https://i.ibb.co/nPHsSDp/xtream-code-iptv.jpg'
 	info_['recherche_all']='1'
@@ -38,7 +38,7 @@ class TSIPHost(TSCBaseHostClass):
 		else:	
 			for elm in multi_tab:
 				self.addDir({'import':cItem['import'],'category' : 'host2','title': elm[0],'icon':cItem['icon'],'xuser':elm[2],'xpass':elm[3],'xhost':elm[1],'xua':elm[4],'mode':'20'})	
-			self.addDir({'import':cItem['import'],'category':'search'  ,'title': _('Search'),'search_item':True,'page':-1,'hst':'tshost','icon':cItem['icon']})
+			self.addDir({'import':cItem['import'],'name':'search','category':'search'  ,'title': _('Search'),'search_item':True,'page':-1,'hst':'tshost','icon':cItem['icon']})
 
 	def showmenu1(self,cItem):
 		try:
@@ -61,7 +61,7 @@ class TSIPHost(TSCBaseHostClass):
 				self.addDir({'import':cItem['import'],'name':'categories','category' : 'host2','category_id': elm['category_id'],'title':elm['category_name'].strip(),'desc':'','xuser':cItem['xuser'],'xpass':cItem['xpass'],'xhost':cItem['xhost'],'xua':cItem['xua'],'mode':'22','icon':cItem['icon']} )	
 		except:
 			pass
-		self.addDir({'import':cItem['import'],'category':'search'  ,'title': _('Search'),'search_item':True,'page':-1,'hst':'tshost','icon':cItem['icon']})
+		self.addDir({'import':cItem['import'],'name':'search','category':'search'  ,'title': _('Search'),'search_item':True,'page':-1,'hst':'tshost','icon':cItem['icon']})
 		
 	def showmenu_films(self,cItem):
 		Url=cItem['xhost']+'/player_api.php?username='+cItem['xuser']+'&password='+cItem['xpass']+'&action=get_vod_streams&category_id='+str(cItem['category_id'])
@@ -152,6 +152,8 @@ class TSIPHost(TSCBaseHostClass):
 				Url=xhost_+'/player_api.php?username='+elm[2]+'&password='+elm[3]+'&action=get_vod_streams'
 				sts, data = self.cm.getPage(Url)
 				data = json_loads(data)
+				printDBG('fffffffffffff'+str_ch.lower())
+				
 				for elm0 in data:
 					if str_ch.lower() in elm0['name'].lower():
 						Url=xhost_+'/movie/'+elm[2]+'/'+elm[3]+'/'+str(elm0['stream_id'])+'.'+elm0['container_extension']

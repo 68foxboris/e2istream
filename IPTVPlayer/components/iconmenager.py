@@ -1,16 +1,17 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 #
 #
 # @Codermik release, based on @Samsamsam's E2iPlayer public.
 # Released with kind permission of Samsamsam.
-# All code developed by Samsamsam is the property of the Samsamsam and the E2iPlayer project,  
+# All code developed by Samsamsam is the property of Samsamsam and the E2iPlayer project,  
 # all other work is © E2iStream Team, aka Codermik.  TSiPlayer is © Rgysoft, his group can be
 # found here:  https://www.facebook.com/E2TSIPlayer/
 #
 # https://www.facebook.com/e2iStream/
 #
 #
+
 
 ###################################################
 # LOCAL import
@@ -23,7 +24,8 @@ from Plugins.Extensions.IPTVPlayer.tools.iptvtools import mkdirs, \
                       FreeSpace as iptvtools_FreeSpace, \
                       printDBG, printExc, RemoveOldDirsIcons, RemoveAllFilesIconsFromPath, \
                       RemoveAllDirsIconsFromPath, GetIconsFilesFromDir, GetNewIconsDirName, \
-                      GetIconsDirs, RemoveIconsDirByPath
+                      GetIconsDirs, RemoveIconsDirByPath, MergeDicts
+
 from Plugins.Extensions.IPTVPlayer.tools.iptvtypes import strwithmeta
 from Plugins.Extensions.IPTVPlayer.libs import ph
 ###################################################
@@ -43,7 +45,7 @@ from Components.config import config
 #config.plugins.iptvplayer.SciezkaCache = ConfigText(default = "/hdd/IPTVCache")
 
 class IconMenager:
-    HEADER = {'User-Agent': 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.18) Gecko/20110621 Mandriva Linux/1.9.2.18-0.1mdv2010.2 (2010.2) Firefox/3.6.18', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}
+    HEADER = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}
 
     def __init__(self, updateFun = None, downloadNew = True):
         printDBG( "IconMenager.__init__" )
@@ -269,6 +271,15 @@ class IconMenager:
         else:
             params['check_first_bytes'] = ['\xFF\xD8', '\xFF\xD9', '\x89\x50\x4E\x47','GIF87a','GIF89a']
         
+        if img_url.endswith('|cf'):
+            img_url = img_url[:-3]
+            params_cfad = {'with_metadata':True, 'use_cookie': True, 'load_cookie': True, 'save_cookie': True} 
+            domain = urlparser.getDomain(img_url)
+            if 'altadefinizione' in domain:
+                params_cfad['cookiefile']='/hdd/IPTVCache//cookies/altadefinizione.cookie'
+        else:
+            params_cfad={}
+
         if img_url.endswith('need_resolve.jpeg'):
             domain = urlparser.getDomain(img_url)
             if domain.startswith('www.'): domain = domain[4:]
@@ -332,6 +343,6 @@ class IconMenager:
                     return False
         
         if not self.cm.isValidUrl(img_url): return False
-        
+        params = MergeDicts(params, params_cfad)
         return self.cm.saveWebFile(file_path, img_url, params)['sts']
     

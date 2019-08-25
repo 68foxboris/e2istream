@@ -4,7 +4,7 @@
 #
 # @Codermik release, based on @Samsamsam's E2iPlayer public.
 # Released with kind permission of Samsamsam.
-# All code developed by Samsamsam is the property of the Samsamsam and the E2iPlayer project,  
+# All code developed by Samsamsam is the property of Samsamsam and the E2iPlayer project,  
 # all other work is © E2iStream Team, aka Codermik.  TSiPlayer is © Rgysoft, his group can be
 # found here:  https://www.facebook.com/E2TSIPlayer/
 #
@@ -32,10 +32,10 @@ def formatExceptionInfo(maxTBlevel=1):
     return "%s\n%s\n%s" % (excName, excArgs, excTb)
     
 def CheckVer(params):
-    url = "http://iptvplayer.vline.pl/check.php?" + params
+    url = "http://softrix.co.uk/istream/reporting/check.php?" + params
     f = urllib.urlopen(url)
     data = f.read()
-    print("E2iStream - CheckVer(params): CheckVer [%s]\nParams [%s]" % (data, params))
+    print("CheckVer [%s]\n" % data)
     f.close()
 
 def download(url, file):

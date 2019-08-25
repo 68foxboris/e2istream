@@ -4,7 +4,7 @@
 #
 # @Codermik release, based on @Samsamsam's E2iPlayer public.
 # Released with kind permission of Samsamsam.
-# All code developed by Samsamsam is the property of the Samsamsam and the E2iPlayer project,  
+# All code developed by Samsamsam is the property of Samsamsam and the E2iPlayer project,  
 # all other work is © E2iStream Team, aka Codermik.  TSiPlayer is © Rgysoft, his group can be
 # found here:  https://www.facebook.com/E2TSIPlayer/
 #
@@ -12,9 +12,6 @@
 #
 #
 
-#  Konfigurator dla iptv 2013
-#  autorzy: j00zek, samsamsam
-#
 
 ###################################################
 # LOCAL import
@@ -92,7 +89,7 @@ config.plugins.iptvplayer.IPTVWebIterface = ConfigYesNo(default = False)
 config.plugins.iptvplayer.plugin_autostart = ConfigYesNo(default = False)
 config.plugins.iptvplayer.plugin_autostart_method = ConfigSelection(default = "wizard", choices = [("wizard", "wizard"),("infobar", "infobar")])
 
-config.plugins.iptvplayer.preferredupdateserver = ConfigSelection(default = "", choices = [("", _("Default"))])
+config.plugins.iptvplayer.preferredupdateserver = ConfigSelection(default = "", choices = [("", _("Default")),("1", "Default")])
 config.plugins.iptvplayer.osk_type = ConfigSelection(default = "", choices = [("", _("Auto")),("system", _("System")), ("own", _("Own model"))])
 config.plugins.iptvplayer.osk_layout = ConfigText(default = "", fixed_size = False)
 config.plugins.iptvplayer.osk_allow_suggestions = ConfigYesNo(default = True)
@@ -157,8 +154,6 @@ config.plugins.iptvplayer.SciezkaCache = ConfigDirectory(default = "/hdd/IPTVCac
 config.plugins.iptvplayer.NaszaTMP = ConfigDirectory(default = "/tmp/") #, fixed_size = False)
 config.plugins.iptvplayer.ZablokujWMV = ConfigYesNo(default = True)
 
-config.plugins.iptvplayer.gitlab_repo = ConfigYesNo(default = False)        # TO BE REMOVED
-
 config.plugins.iptvplayer.vkcom_login    = ConfigText(default="", fixed_size = False)
 config.plugins.iptvplayer.vkcom_password = ConfigText(default="", fixed_size = False)
 
@@ -172,9 +167,9 @@ config.plugins.iptvplayer.useSubtitlesParserExtension = ConfigYesNo(default = Tr
 config.plugins.iptvplayer.opensuborg_login    = ConfigText(default="", fixed_size = False)
 config.plugins.iptvplayer.opensuborg_password = ConfigText(default="", fixed_size = False)
 config.plugins.iptvplayer.napisy24pl_login    = ConfigText(default="", fixed_size = False)
-config.plugins.iptvplayer.napisy24pl_password = ConfigText(default="", fixed_size = False) 
+config.plugins.iptvplayer.napisy24pl_password = ConfigText(default="", fixed_size = False)
 
-config.plugins.iptvplayer.debugprint = ConfigSelection(default = "", choices = [("", _("no")),("console", _("yes, to console")),("debugfile", _("yes, to file /hdd/iptv.dbg"))]) 
+config.plugins.iptvplayer.debugprint = ConfigSelection(default = "", choices = [("", _("no")),("console", _("yes, to console")),("debugfile", _("yes, to file /hdd/e2istream.dbg"))]) 
 
 #icons
 config.plugins.iptvplayer.IconsSize = ConfigSelection(default = "100", choices = [("135", "135x135"),("120", "120x120"),("100", "100x100")]) 
@@ -311,7 +306,7 @@ class ConfigMenu(ConfigBaseWidget):
 
     def layoutFinished(self):
         ConfigBaseWidget.layoutFinished(self)
-        self.setTitle(_("E2iStream - settings"))
+        self.setTitle(_("E2iStream - Settings"))
         
     @staticmethod
     def fillConfigList(list, hiddenOptions=False):
@@ -336,13 +331,8 @@ class ConfigMenu(ConfigBaseWidget):
             list.append(getConfigListEntry("Auto start method", config.plugins.iptvplayer.plugin_autostart_method))
             list.append(getConfigListEntry("Prefer hlsld for playlist with alt. media", config.plugins.iptvplayer.prefer_hlsdl_for_pls_with_alt_media))
 
-        list.append( getConfigListEntry(_("Auto check for plugin update"), config.plugins.iptvplayer.autoCheckForUpdate) )
+#        list.append( getConfigListEntry(_("Auto check for plugin update"), config.plugins.iptvplayer.autoCheckForUpdate) )
         list.append( getConfigListEntry(_("The preferred update server"), config.plugins.iptvplayer.preferredupdateserver) )
-        if config.plugins.iptvplayer.preferredupdateserver.value == '2':
-            list.append(getConfigListEntry(_("Add update from GitLab repository"), config.plugins.iptvplayer.gitlab_repo))
-        if config.plugins.iptvplayer.preferredupdateserver.value == '3':
-            list.append(getConfigListEntry(_("%s login") % 'E2iStream', config.plugins.iptvplayer.iptvplayer_login))
-            list.append(getConfigListEntry(_("%s password") % 'E2iStream', config.plugins.iptvplayer.iptvplayer_password))
         list.append( getConfigListEntry(_("Update"), config.plugins.iptvplayer.fakeUpdate) )
         list.append( getConfigListEntry(_("Virtual Keyboard type"), config.plugins.iptvplayer.osk_type) )
         if config.plugins.iptvplayer.osk_type.value == 'own':
@@ -358,8 +348,7 @@ class ConfigMenu(ConfigBaseWidget):
         list.append( getConfigListEntry(_("Disable live at plugin start"), config.plugins.iptvplayer.disable_live))
         list.append( getConfigListEntry(_("Pin protection for plugin"), config.plugins.iptvplayer.pluginProtectedByPin))
         list.append( getConfigListEntry(_("Pin protection for configuration"), config.plugins.iptvplayer.configProtectedByPin) )
-        if config.plugins.iptvplayer.pluginProtectedByPin.value or config.plugins.iptvplayer.configProtectedByPin.value:
-            list.append( getConfigListEntry(_("Set pin code"), config.plugins.iptvplayer.fakePin) )
+        list.append( getConfigListEntry(_("Set pin code"), config.plugins.iptvplayer.fakePin) )
         
         list.append(getConfigListEntry(_("Skin"), config.plugins.iptvplayer.skin))
         list.append(getConfigListEntry(_("Display thumbnails"), config.plugins.iptvplayer.showcover))
@@ -486,8 +475,8 @@ class ConfigMenu(ConfigBaseWidget):
         list.append(getConfigListEntry(_("Autoplay start delay"), config.plugins.iptvplayer.autoplay_start_delay))
         list.append(getConfigListEntry(_("The number of items in the search history"), config.plugins.iptvplayer.search_history_size))
         list.append(getConfigListEntry(_("Block wmv files"), config.plugins.iptvplayer.ZablokujWMV))
-        list.append(getConfigListEntry(_("Show IPTVPlayer in extension list"), config.plugins.iptvplayer.showinextensions))
-        list.append(getConfigListEntry(_("Show IPTVPlayer in main menu"), config.plugins.iptvplayer.showinMainMenu))
+        list.append(getConfigListEntry(_("Show E2iStream in extension list"), config.plugins.iptvplayer.showinextensions))
+        list.append(getConfigListEntry(_("Show E2iStream in main menu"), config.plugins.iptvplayer.showinMainMenu))
         list.append(getConfigListEntry(_("Show update icon in service selection menu"), config.plugins.iptvplayer.AktualizacjaWmenu))
         list.append(getConfigListEntry(_("Debug logs"), config.plugins.iptvplayer.debugprint))
         list.append(getConfigListEntry(_("Allow downgrade"), config.plugins.iptvplayer.downgradePossible))

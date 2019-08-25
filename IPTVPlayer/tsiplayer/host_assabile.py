@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 from Plugins.Extensions.IPTVPlayer.tools.iptvtools import printDBG
 from Plugins.Extensions.IPTVPlayer.libs import ph
-from Plugins.Extensions.IPTVPlayer.tsiplayer.tstools import TSCBaseHostClass,tunisia_gouv
+from Plugins.Extensions.IPTVPlayer.tsiplayer.libs.tstools import TSCBaseHostClass,tunisia_gouv
 from Plugins.Extensions.IPTVPlayer.libs.e2ijson import loads as json_loads
 from Components.config import config
 import re
@@ -15,7 +15,7 @@ def getinfo():
 	info_['name']='Assabile.Com'
 	info_['version']='1.0 05/05/2019'
 	info_['dev']='RGYSoft'
-	info_['cat_id']='4'
+	info_['cat_id']='204'
 	info_['desc']='Quran Audio Library'
 	info_['icon']='http://ar.assabile.com/img/logo-assabile.png'
 	info_['recherche_all']='0'
@@ -53,67 +53,73 @@ class TSIPHost(TSCBaseHostClass):
 	def showmenu21(self,cItem):
 		Url0='http://ar.assabile.com/lesson'
 		sts, data = self.getPage(Url0) 
-		data_ = re.findall('<li class="activeFilter">(.*?)id="sort-container"', data, re.S)
-		if data_:
-			data_2 = re.findall('<li.*?href="(.*?)".*?">(.*?)<', '<li '+data_[0], re.S)
-			for (url,name) in data_2:
-				self.addDir({'import':cItem['import'],'category' :'host2','title':name,'url':'http://ar.assabile.com'+url,'icon':cItem['icon'],'mode': '22'})
+		if sts:
+			data_ = re.findall('<li class="activeFilter">(.*?)id="sort-container"', data, re.S)
+			if data_:
+				data_2 = re.findall('<li.*?href="(.*?)".*?">(.*?)<', '<li '+data_[0], re.S)
+				for (url,name) in data_2:
+					self.addDir({'import':cItem['import'],'category' :'host2','title':name,'url':'http://ar.assabile.com'+url,'icon':cItem['icon'],'mode': '22'})
 
 	def showmenu22(self,cItem):
 		page=cItem.get('page',1)
 		uRL=	cItem['url']
 		Url0=uRL+'/page:'+str(page)
 		sts, data = self.getPage(Url0) 
-		data_ = re.findall('portfolio-image">.*?href="(.*?)".*?src="(.*?)".*?title="(.*?)"', data, re.S)
-		i=0
-		for (url,image,name) in data_:
-			if name !='':
-				self.addDir({'import':cItem['import'],'category' :'host2','title':name,'url':'http://ar.assabile.com'+url,'icon':'http://ar.assabile.com'+image,'mode': '30'})
-				i=i+1
-		if i>10:
-			self.addDir({'import':cItem['import'],'category' : 'host2','title':'Next','url':uRL,'page':page+1,'mode':'20'})
-		
+		if sts:
+			data_ = re.findall('portfolio-image">.*?href="(.*?)".*?src="(.*?)".*?title="(.*?)"', data, re.S)
+			i=0
+			for (url,image,name) in data_:
+				if name !='':
+					self.addDir({'import':cItem['import'],'category' :'host2','title':name,'url':'http://ar.assabile.com'+url,'icon':'http://ar.assabile.com'+image,'mode': '30'})
+					i=i+1
+			if i>10:
+				self.addDir({'import':cItem['import'],'category' : 'host2','title':'Next','url':uRL,'page':page+1,'mode':'20'})
+			
 		
 	def showmenu14(self,cItem):
 		Url0='http://ar.assabile.com/quran'
 		sts, data = self.getPage(Url0) 
-		data_ = re.findall('<li class="activeFilter">(.*?)id="sort-container"', data, re.S)
-		if data_:
-			data_2 = re.findall('<li.*?href="(.*?)".*?">(.*?)<', '<li '+data_[0], re.S)
-			for (url,name) in data_2:
-				self.addDir({'import':cItem['import'],'category' :'host2','title':name,'url':'http://ar.assabile.com'+url,'icon':cItem['icon'],'mode': '20'})
+		if sts:
+			data_ = re.findall('<li class="activeFilter">(.*?)id="sort-container"', data, re.S)
+			if data_:
+				data_2 = re.findall('<li.*?href="(.*?)".*?">(.*?)<', '<li '+data_[0], re.S)
+				for (url,name) in data_2:
+					self.addDir({'import':cItem['import'],'category' :'host2','title':name,'url':'http://ar.assabile.com'+url,'icon':cItem['icon'],'mode': '20'})
 
 	def showmenu15(self,cItem):
 		Url0='http://ar.assabile.com/quran'
 		sts, data = self.getPage(Url0) 
-		data_ = re.findall('<div>المصاحف المسموعة</div>(.*?)<div>الروايات</div>', data, re.S)
-		if data_:
-			data_2 = re.findall('<li.*?href="(.*?)">(.*?)</a>', data_[0], re.S)
-			for (url,name) in data_2:
-				self.addDir({'import':cItem['import'],'category' :'host2','title':ph.clean_html(name),'url':'http://ar.assabile.com'+url,'icon':cItem['icon'],'mode': '16'})
+		if sts:
+			data_ = re.findall('<div>المصاحف المسموعة</div>(.*?)<div>الروايات</div>', data, re.S)
+			if data_:
+				data_2 = re.findall('<li.*?href="(.*?)">(.*?)</a>', data_[0], re.S)
+				for (url,name) in data_2:
+					self.addDir({'import':cItem['import'],'category' :'host2','title':ph.clean_html(name),'url':'http://ar.assabile.com'+url,'icon':cItem['icon'],'mode': '16'})
 
 	def showmenu16(self,cItem):
 		page=cItem.get('page',1)
 		uRL=	cItem['url']
 		Url0=uRL+'/page:'+str(page)
 		sts, data = self.getPage(Url0) 
-		i=0
-		data_ = re.findall('name-surat">.*?href="(.*?)".*?data-recitation="(.*?)".*?data-name="(.*?)".*?reciters">(.*?)<.*?<span>(.*?)</span>', data, re.S)
-		for (url,desc,name,desc2,riwaya) in data_:
-			if name !='':
-				i=i+1
-				self.addDir({'import':cItem['import'],'category' :'host2','title':name+' - '+ph.clean_html(riwaya)+ ' - '+desc2,'desc':'\c00????00'+' تلاوة'+desc,'url':'http://ar.assabile.com'+url,'icon':cItem['icon'],'mode': '31'})
-		if i>14:
-			self.addDir({'import':cItem['import'],'category' : 'host2','icon':cItem['icon'],'title':'Next','url':uRL,'page':page+1,'mode':'16'})
+		if sts:
+			i=0
+			data_ = re.findall('name-surat">.*?href="(.*?)".*?data-recitation="(.*?)".*?data-name="(.*?)".*?reciters">(.*?)<.*?<span>(.*?)</span>', data, re.S)
+			for (url,desc,name,desc2,riwaya) in data_:
+				if name !='':
+					i=i+1
+					self.addDir({'import':cItem['import'],'category' :'host2','title':name+' - '+ph.clean_html(riwaya)+ ' - '+desc2,'desc':'\c00????00'+' تلاوة'+desc,'url':'http://ar.assabile.com'+url,'icon':cItem['icon'],'mode': '31'})
+			if i>14:
+				self.addDir({'import':cItem['import'],'category' : 'host2','icon':cItem['icon'],'title':'Next','url':uRL,'page':page+1,'mode':'16'})
 
 	def showmenu17(self,cItem):
 		Url0='http://ar.assabile.com/quran'
 		sts, data = self.getPage(Url0) 
-		data_ = re.findall('<div>الروايات</div>(.*?)"/quran/top">', data, re.S)
-		if data_:
-			data_2 = re.findall('<li.*?href="(.*?)">(.*?)</a>', data_[0], re.S)
-			for (url,name) in data_2:
-				self.addDir({'import':cItem['import'],'category' :'host2','title':ph.clean_html(name),'url':'http://ar.assabile.com'+url,'icon':cItem['icon'],'mode': '16'})
+		if sts:
+			data_ = re.findall('<div>الروايات</div>(.*?)"/quran/top">', data, re.S)
+			if data_:
+				data_2 = re.findall('<li.*?href="(.*?)">(.*?)</a>', data_[0], re.S)
+				for (url,name) in data_2:
+					self.addDir({'import':cItem['import'],'category' :'host2','title':ph.clean_html(name),'url':'http://ar.assabile.com'+url,'icon':cItem['icon'],'mode': '16'})
 
 
 
@@ -123,14 +129,15 @@ class TSIPHost(TSCBaseHostClass):
 		uRL=	cItem['url']
 		Url0=uRL+'/page:'+str(page)
 		sts, data = self.getPage(Url0) 
-		data_ = re.findall('portfolio-image">.*?href="(.*?)".*?src="(.*?)".*?title="(.*?)"', data, re.S)
-		i=0
-		for (url,image,name) in data_:
-			if name !='':
-				self.addDir({'import':cItem['import'],'category' :'host2','title':name,'url':'http://ar.assabile.com'+url,'icon':'http://ar.assabile.com'+image,'mode': '30'})
-				i=i+1
-		if i>10:
-			self.addDir({'import':cItem['import'],'category' : 'host2','title':'Next','url':uRL,'page':page+1,'mode':'20'})
+		if sts:
+			data_ = re.findall('portfolio-image">.*?href="(.*?)".*?src="(.*?)".*?title="(.*?)"', data, re.S)
+			i=0
+			for (url,image,name) in data_:
+				if name !='':
+					self.addDir({'import':cItem['import'],'category' :'host2','title':name,'url':'http://ar.assabile.com'+url,'icon':'http://ar.assabile.com'+image,'mode': '30'})
+					i=i+1
+			if i>10:
+				self.addDir({'import':cItem['import'],'category' : 'host2','title':'Next','url':uRL,'page':page+1,'mode':'20'})
 
 	def showmenu30(self,cItem):
 		uRL=	cItem['url']
@@ -138,19 +145,21 @@ class TSIPHost(TSCBaseHostClass):
 		if data_:
 			URL=data_[0]+'/collection'
 			sts, data = self.getPage(URL) 
-			data_ = re.findall('name-surat">.*?href="(.*?)".*?data-recitation="(.*?)".*?data-name="(.*?)".*?data-riwaya="(.*?)"', data, re.S)
-			for (url,desc,name,riwaya) in data_:
-				if name !='':
-					self.addDir({'import':cItem['import'],'category' :'host2','title':name+' - '+riwaya,'desc':'\c00????00'+' تلاوة'+desc,'url':'http://ar.assabile.com'+url,'icon':cItem['icon'],'mode': '31'})
+			if sts:
+				data_ = re.findall('name-surat">.*?href="(.*?)".*?data-recitation="(.*?)".*?data-name="(.*?)".*?data-riwaya="(.*?)"', data, re.S)
+				for (url,desc,name,riwaya) in data_:
+					if name !='':
+						self.addDir({'import':cItem['import'],'category' :'host2','title':name+' - '+riwaya,'desc':'\c00????00'+' تلاوة'+desc,'url':'http://ar.assabile.com'+url,'icon':cItem['icon'],'mode': '31'})
 
 
 	def showmenu31(self,cItem):
 		uRL=	cItem['url']
 		sts, data = self.getPage(uRL) 
-		data_ = re.findall('class="name">.*?link-media never".*?href="#(.*?)".*?">(.*?)</a.*?"timer">(.*?)<', data, re.S)
-		for (url,name,desc) in data_:
-			if name !='':
-				self.addAudio({'import':cItem['import'],'category' :'host2','title':ph.clean_html(name),'desc':desc,'url':url,'icon':cItem['icon'],'hst': 'tshost'})
+		if sts:
+			data_ = re.findall('class="name">.*?link-media never".*?href="#(.*?)".*?">(.*?)</a.*?"timer">(.*?)<', data, re.S)
+			for (url,name,desc) in data_:
+				if name !='':
+					self.addAudio({'import':cItem['import'],'category' :'host2','title':ph.clean_html(name),'desc':desc,'url':url,'icon':cItem['icon'],'hst': 'tshost'})
 
 
 
@@ -159,8 +168,9 @@ class TSIPHost(TSCBaseHostClass):
 		URL='http://ar.assabile.com/ajax/getrcita-link-'+cItem['url']
 		
 		sts, data = self.getPage(URL,self.defaultParams)
-		if data:
-			urlTab.append({'name':cItem['title'], 'url':data, 'need_resolve':0})
+		if sts:
+			if data:
+				urlTab.append({'name':cItem['title'], 'url':data, 'need_resolve':0})
 		return urlTab	
 
 

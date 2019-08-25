@@ -4,7 +4,7 @@
 #
 # @Codermik release, based on @Samsamsam's E2iPlayer public.
 # Released with kind permission of Samsamsam.
-# All code developed by Samsamsam is the property of the Samsamsam and the E2iPlayer project,  
+# All code developed by Samsamsam is the property of Samsamsam and the E2iPlayer project,  
 # all other work is © E2iStream Team, aka Codermik.  TSiPlayer is © Rgysoft, his group can be
 # found here:  https://www.facebook.com/E2TSIPlayer/
 #
@@ -12,6 +12,7 @@
 #
 #
 
+#
 
 ###################################################
 # LOCAL import
@@ -393,7 +394,7 @@ class IPTVSubDownloaderWidget(Screen):
                     exceptStack = self.workThread.getExceptStack()
                     reporter = GetPluginDir('iptvdm/reporthostcrash.py')
                     msg = urllib_quote('%s|%s|%s|%s' % ('HOST_CRASH', IPTVSubDownloaderWidget.IPTV_VERSION, self.hostName, self.getCategoryPath()))
-                    self.crashConsole = iptv_system('python "%s" "https://www.softrix.co.uk/istream/reporting/report.php?msg=%s" "%s" 2&>1 > /dev/null' % (reporter, msg, exceptStack))
+                    self.crashConsole = iptv_system('python "%s" "http://www.softrix.co.uk/istream/reporting/report.php?msg=%s" "%s" 2&>1 > /dev/null' % (reporter, msg, exceptStack))
                     printDBG(msg)
                 except Exception:
                     printExc()

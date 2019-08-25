@@ -608,5 +608,5 @@ class IPTVHost(CHostBase):
         searchTypesOptions = []
         searchTypesOptions.append((_("Games"), "games"))
         searchTypesOptions.append((_("Live streams"), "streams"))
-        searchTypesOptions.append((_("Channles"), "channels"))
+        searchTypesOptions.append((_("Channels"), "channels"))
         return searchTypesOptions

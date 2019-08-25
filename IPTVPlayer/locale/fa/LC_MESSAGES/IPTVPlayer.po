@@ -1790,6 +1790,9 @@ msgstr ""
 msgid "Please Note: You use this plugin at your own risk."
 msgstr ""
 
+msgid "Please Note: You use this plugin at your own risk."
+msgstr ""
+
 msgid ""
 "Please visit '%s' using a web-browser from the PC to see If links are available "
 "please report this problem.\n"

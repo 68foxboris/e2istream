@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 from Plugins.Extensions.IPTVPlayer.tools.iptvtools import printDBG
-from Plugins.Extensions.IPTVPlayer.tsiplayer.tstools import TSCBaseHostClass
+from Plugins.Extensions.IPTVPlayer.tsiplayer.libs.tstools import TSCBaseHostClass
 
 import re
 import base64
@@ -10,7 +10,7 @@ def getinfo():
 	info_['name']='Stardima.Com'
 	info_['version']='1.0 19/04/2019'
 	info_['dev']='RGYSoft'
-	info_['cat_id']='3'
+	info_['cat_id']='203'
 	info_['desc']='افلام و مسلسلات كرتون'
 	info_['icon']='https://www.stardima.com/watch/uploads/custom-logo.jpg'
 	info_['recherche_all']='0'
@@ -44,24 +44,26 @@ class TSIPHost(TSCBaseHostClass):
 
 	def showmenu2(self,cItem):
 		sts, data = self.getPage(cItem['url'])
-		Liste_els = re.findall('<li><a href="(.*?)">(.*?)</a></li>', data, re.S)	
-		for href,title in Liste_els:
-			try:href=href.split('.html')[0]+'.html'
-			except:continue
-			if not "videos-1-date.html" in href:
-				continue
-			self.addDir({'import':cItem['import'],'category' : 'host2','title':title,'url':href,'mode':'20','good_for_fav':True})			       
+		if sts:
+			Liste_els = re.findall('<li><a href="(.*?)">(.*?)</a></li>', data, re.S)	
+			for href,title in Liste_els:
+				try:href=href.split('.html')[0]+'.html'
+				except:continue
+				if not "videos-1-date.html" in href:
+					continue
+				self.addDir({'import':cItem['import'],'category' : 'host2','title':title,'url':href,'mode':'20','good_for_fav':True})			       
 
 		
 	def showmenu3(self,cItem):
 		sts, data = self.getPage('https://www.stardima.com/ads.php')
-		Liste_els = re.findall('<li>.*?title="(.*?)".*?href="(.*?)".*?src="(.*?)"', data, re.S)	
-		for (titre,url,image) in Liste_els:
-			if '?cat=' in url:
-				x1,name_=url.split('?cat=')
-				url='https://www.stardima.com/watch/browse-'+name_+'-videos-1-date.html'
-			if titre.strip()!='':
-				self.addDir({'import':cItem['import'],'category' : 'host2','title':titre,'url':url,'icon':image,'mode':'20','good_for_fav':True})			       
+		if sts:
+			Liste_els = re.findall('<li>.*?title="(.*?)".*?href="(.*?)".*?src="(.*?)"', data, re.S)	
+			for (titre,url,image) in Liste_els:
+				if '?cat=' in url:
+					x1,name_=url.split('?cat=')
+					url='https://www.stardima.com/watch/browse-'+name_+'-videos-1-date.html'
+				if titre.strip()!='':
+					self.addDir({'import':cItem['import'],'category' : 'host2','title':titre,'url':url,'icon':image,'mode':'20','good_for_fav':True})			       
 
 		
 	def showmenu4(self,cItem):
@@ -82,21 +84,23 @@ class TSIPHost(TSCBaseHostClass):
 		else:
 			url=url_or+'?page='+str(page)
 		sts, data = self.getPage(url)
-		Liste_els = re.findall('class="thumbnail">.*?echo="(.*?)".*?<a href="(.*?)".*?title="(.*?)"', data, re.S)
-		i=0	
-		for (image,url,titre) in Liste_els:
-			self.addVideo({'import':cItem['import'],'category' : 'host2','title':titre,'url':url,'icon':image,'hst':'tshost','good_for_fav':True})
-			i=i+1
-		if i>10:
-			self.addDir({'import':cItem['import'],'category' : 'host2','title':'Page Suivante','url':url_or,'page':page+1,'mode':'20'})
+		if sts:
+			Liste_els = re.findall('class="thumbnail">.*?echo="(.*?)".*?<a href="(.*?)".*?title="(.*?)"', data, re.S)
+			i=0	
+			for (image,url,titre) in Liste_els:
+				self.addVideo({'import':cItem['import'],'category' : 'host2','title':titre,'url':url,'icon':image,'hst':'tshost','good_for_fav':True})
+				i=i+1
+			if i>10:
+				self.addDir({'import':cItem['import'],'category' : 'host2','title':'Page Suivante','url':url_or,'page':page+1,'mode':'20'})
 
 
 	def SearchResult(self,str_ch,page,extra):
 		url_='https://www.stardima.com/watch/search.php?keywords='+str_ch+'&page='+str(page)
 		sts, data = self.getPage(url_)
-		Liste_els = re.findall('class="thumbnail">.*?echo="(.*?)".*?<a href="(.*?)".*?title="(.*?)"', data, re.S)
-		for (image,url,titre) in Liste_els:
-			self.addVideo({'import':extra,'category' : 'host2','title':titre,'url':url,'icon':image,'hst':'tshost','good_for_fav':True})
+		if sts:
+			Liste_els = re.findall('class="thumbnail">.*?echo="(.*?)".*?<a href="(.*?)".*?title="(.*?)"', data, re.S)
+			for (image,url,titre) in Liste_els:
+				self.addVideo({'import':extra,'category' : 'host2','title':titre,'url':url,'icon':image,'hst':'tshost','good_for_fav':True})
 
 
 		
@@ -106,13 +110,14 @@ class TSIPHost(TSCBaseHostClass):
 		urlTab = []
 		url=cItem['url']	
 		sts, data = self.getPage(url)
-		Liste_els = re.findall('contentURL" content="(.*?)"', data, re.S)
-		if 	Liste_els:
-			urlTab.append({'name':'Main Server', 'url':Liste_els[0], 'need_resolve':0})	
-		
-		Liste_els = re.findall('<input rel="nofollow".*?.open\(\'(.*?)\'.*?value=\'(.*?)\'', data, re.S)	
-		for (url,titre) in 	Liste_els:
-			urlTab.append({'name':titre, 'url':'hst#tshost#'+url, 'need_resolve':1})	
+		if sts:
+			Liste_els = re.findall('contentURL" content="(.*?)"', data, re.S)
+			if 	Liste_els:
+				urlTab.append({'name':'Main Server', 'url':Liste_els[0], 'need_resolve':0})	
+			
+			Liste_els = re.findall('<input rel="nofollow".*?.open\(\'(.*?)\'.*?value=\'(.*?)\'', data, re.S)	
+			for (url,titre) in 	Liste_els:
+				urlTab.append({'name':titre, 'url':'hst#tshost#'+url, 'need_resolve':1})	
 
 		return urlTab	
 
@@ -120,18 +125,19 @@ class TSIPHost(TSCBaseHostClass):
 		urlTab = []
 		url='https://www.stardima.com/watch/'+videoUrl	
 		sts, data = self.getPage(url)
-		Liste_els = re.findall('videoUrl.*? value="(.*?)"', data, re.S)
-		if 	Liste_els:
-			URL_part=Liste_els[0].split('O0k0O', 1)
-			new=''
-			i=0
-			for letter in URL_part[0]:
-				if (i % 2)==0:
-					new=new+letter
-				i=i+1	
-			URL_b64=new+URL_part[1].replace('O0k0O','=')
-			URL_=base64.b64decode(URL_b64)
-			urlTab.append((URL_,'0'))	
+		if sts:
+			Liste_els = re.findall('videoUrl.*? value="(.*?)"', data, re.S)
+			if 	Liste_els:
+				URL_part=Liste_els[0].split('O0k0O', 1)
+				new=''
+				i=0
+				for letter in URL_part[0]:
+					if (i % 2)==0:
+						new=new+letter
+					i=i+1	
+				URL_b64=new+URL_part[1].replace('O0k0O','=')
+				URL_=base64.b64decode(URL_b64)
+				urlTab.append((URL_,'0'))	
 		return urlTab	
 			
 	def start(self,cItem):

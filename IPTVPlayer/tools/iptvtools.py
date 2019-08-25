@@ -4,7 +4,7 @@
 #
 # @Codermik release, based on @Samsamsam's E2iPlayer public.
 # Released with kind permission of Samsamsam.
-# All code developed by Samsamsam is the property of the Samsamsam and the E2iPlayer project,  
+# All code developed by Samsamsam is the property of Samsamsam and the E2iPlayer project,  
 # all other work is © E2iStream Team, aka Codermik.  TSiPlayer is © Rgysoft, his group can be
 # found here:  https://www.facebook.com/E2TSIPlayer/
 #
@@ -42,51 +42,45 @@ import stat
 import codecs
 import datetime
 
-SERVER_DOMAINS = {'softrix':'https://www.softrix.co.uk/'}
-SERVER_UPDATE_PATH = {'softrix':'istream/'}
+SERVER_DOMAINS = {'softrix':'http://www.softrix.co.uk/'}
+SERVER_UPDATE_PATH = {'softrix':'istream/'} 
 
 def GetServerKey(serverNum=None):
     serverKey = 'softrix'
-    printDBG("..:: E2iStream ::..   GetServerKey(serverNum=None): ServerKey = [%s]" % serverKey)
     return serverKey
 
 def GetUpdateServerUri(file='', serverNum=None):
     serverKey = GetServerKey(serverNum)
     uri = SERVER_DOMAINS[serverKey] + SERVER_UPDATE_PATH[serverKey] + file
-    printDBG("..:: E2iStream ::..   GetUpdateServerUri(file='', serverNum=None): uri = [%s]" % uri)
+    printDBG("GetUpdateServerUri -> %s" % uri)
     return uri
 
 def GetResourcesServerUri(file='', serverNum=None):
     serverKey = GetServerKey(serverNum)
-    uri = SERVER_DOMAINS[serverKey] + 'istream/resources/' + file
-    printDBG("..:: E2iStream ::..   GetResourcesServerUri(file='', serverNum=None): uri = [%s]" % uri)
+    uri = SERVER_DOMAINS[serverKey] + 'istream/resources/' + file 
+    printDBG("GetResourcesServerUri -> %s" % uri)
     return uri
 
 def UsePyCurl():
     return config.plugins.iptvplayer.usepycurl.value
 
 def GetIconsHash():
-    printDBG("..:: E2iStream ::..   GetIconsHash():")
     iconsHashFile = resolveFilename(SCOPE_PLUGINS, 'Extensions/IPTVPlayer/icons/PlayerSelector/hash.txt')
     sts, data = ReadTextFile(iconsHashFile)
     if sts: return data.strip()
     else: return ''
 
 def SetIconsHash(value):
-    printDBG("..:: E2iStream ::..   SetIconsHash(value):")
     iconsHashFile = resolveFilename(SCOPE_PLUGINS, 'Extensions/IPTVPlayer/icons/PlayerSelector/hash.txt')
     return WriteTextFile(iconsHashFile, value)
 
 def GetGraphicsHash():
-    printDBG("..:: E2iStream ::..   GetGraphicsHash():")
     graphicsHashFile = resolveFilename(SCOPE_PLUGINS, 'Extensions/IPTVPlayer/icons/hash.txt')
     sts, data = ReadTextFile(graphicsHashFile)
-    printDBG("sts = [%s], data = [%s]:" % (sts, data))
     if sts: return data.strip()
     else: return ''
 
 def SetGraphicsHash(value):
-    printDBG("..:: E2iStream ::..   SetGraphicsHash(value):")
     graphicsHashFile = resolveFilename(SCOPE_PLUGINS, 'Extensions/IPTVPlayer/icons/hash.txt')
     return WriteTextFile(graphicsHashFile, value)
 
@@ -108,7 +102,6 @@ def PrevDay(dt):
 
 ###################################################
 def GetNice(pid=None):
-    printDBG("..:: E2iStream ::..   GetNice(pid=None):")
     nice = 0
     if None == pid:
         pid = 'self'
@@ -123,14 +116,12 @@ def GetNice(pid=None):
     return nice
     
 def E2PrioFix(cmd, factor=2):
-    printDBG("..:: E2iStream ::..   E2PrioFix(cmd, factor=2):")
     if '/duk' not in cmd and config.plugins.iptvplayer.plarform.value in ('mipsel', 'armv7', 'armv5t'):
         return 'nice -n %d %s' % (GetNice() + factor, cmd)
     else:
         return cmd
     
 def GetDefaultLang(full=False):
-    printDBG("..:: E2iStream ::..   GetDefaultLang(full=False):")
     if full:
         try: defaultLanguage = language.getActiveLanguage()
         except Exception:
@@ -144,7 +135,6 @@ def GetDefaultLang(full=False):
     return defaultLanguage
     
 def GetPolishSubEncoding(filePath):
-    printDBG("..:: E2iStream ::..   GetPolishSubEncoding(filePath):")
     encoding = 'utf-8'
     # Method provided by @areq: http://forum.dvhk.to/showpost.php?p=5367956&postcount=5331
     try:
@@ -172,7 +162,6 @@ def GetPolishSubEncoding(filePath):
     return encoding
     
 def MapUcharEncoding(encoding):
-    printDBG("..:: E2iStream ::..   MapUcharEncoding(encoding):")
     ENCODING_MAP = {'X-MAC-CYRILLIC':"MAC-CYRILLIC", "ASCII":"UTF-8"}
     printDBG("MapUcharEncoding in encoding[%s]" % encoding)
     try: encoding = ENCODING_MAP.get(encoding.strip().upper(), encoding.strip())
@@ -489,7 +478,6 @@ def Which(program):
                     return exe_file
     except Exception: printExc()
     return ''
-
 #############################################################
 # class used to auto-select one link when video has several 
 # links with different qualities
@@ -598,7 +586,7 @@ def printDBG( DBGtxt ):
         print(DBGtxt)
     elif DBG == 'debugfile':
         try:
-            f = open('/hdd/iptv.dbg', 'a')
+            f = open('/hdd/e2istream.dbg', 'a')
             f.write(DBGtxt + '\n')
             f.close
         except Exception:
@@ -614,6 +602,34 @@ def printDBG( DBGtxt ):
                 print("======================EXC printDBG======================")
                 print("printDBG(II): %s" % traceback.format_exc())
                 print("========================================================")
+
+
+# Added for places where I only want to see my debugging lines.
+# Turning on debugging can be quite spammy therefore I can use
+# this only to show those I am interested in.  CM.
+
+# Note that using this should be temporary as the file will grow
+# in size if any calls to this function are left in release.
+
+def e2iStreamDBG( DBGtxt ):
+    try:
+        f = open('/hdd/codermik.dbg', 'a')
+        f.write(DBGtxt + '\n')
+        f.close
+    except Exception:
+        print("======================EXC printDBG======================")
+        print("printDBG(I): %s" % traceback.format_exc())
+        print("========================================================")
+        try:
+            msg = '%s' % traceback.format_exc()
+            f = open('/tmp/iptv.dbg', 'a')
+            f.write(DBGtxt + '\n')
+            f.close
+        except Exception:
+            print("======================EXC printDBG======================")
+            print("printDBG(II): %s" % traceback.format_exc())
+            print("========================================================")
+
 
 #####################################################
 # get host list based on files in /hosts folder
@@ -1320,7 +1336,6 @@ def GetShortPythonVersion():
     
 def GetVersionNum(ver):
     try:
-        printDBG("..:: E2iStream ::..   GetVersionNum(ver): ver = [%s]" % ver)        
         if None == re.match("[0-9]+\.[0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]", ver): raise Exception("Wrong version!")
         return int(ver.replace('.', ''))
     except Exception:

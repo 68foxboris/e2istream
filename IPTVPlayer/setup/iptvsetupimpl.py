@@ -4,7 +4,7 @@
 #
 # @Codermik release, based on @Samsamsam's E2iPlayer public.
 # Released with kind permission of Samsamsam.
-# All code developed by Samsamsam is the property of the Samsamsam and the E2iPlayer project,  
+# All code developed by Samsamsam is the property of Samsamsam and the E2iPlayer project,  
 # all other work is © E2iStream Team, aka Codermik.  TSiPlayer is © Rgysoft, his group can be
 # found here:  https://www.facebook.com/E2TSIPlayer/
 #
@@ -125,7 +125,7 @@ class IPTVSetupImpl:
         self.cmdwrapPaths = [resolveFilename(SCOPE_PLUGINS, 'Extensions/IPTVPlayer/bin/cmdwrap'), "/usr/bin/cmdwrap"]
         
         # duk
-        self.dukVersion = 5 # "2.1.99 [experimental]" # real version
+        self.dukVersion = 5
         self.dukPaths = [resolveFilename(SCOPE_PLUGINS, 'Extensions/IPTVPlayer/bin/duk'), "/usr/bin/duk"]
         
         self.binaryInstalledSuccessfully = False
@@ -250,7 +250,7 @@ class IPTVSetupImpl:
         if config.plugins.iptvplayer.plarform.value != 'mipsel' or IsFPUAvailable() or config.plugins.iptvplayer.plarformfpuabi.value != '':
             self.getOpensslVersion()
         else:
-            self.setInfo(_("Detection of MIPSEL FPU ABI."), _("This step is required to properly select binaries for installation."))
+            self.setInfo(_("Detection of MIPSEL FPU ABI."), _("This step is required to proper select binaries for installation."))
             
             def _cmdValidator(code, data):
                 if 'IPTVPLAYER FPU TEST' in data: 
@@ -529,7 +529,7 @@ class IPTVSetupImpl:
             return cmd
         
         self.stepHelper = CBinaryStepHelper("wget", self.platform, self.openSSLVersion, config.plugins.iptvplayer.wgetpath)
-        self.stepHelper.updateMessage('detection', (_('The "%s" utility is used by the %s for buffering and downloading [%s] links.') % ('wget', 'E2iStream', 'http, https, f4m, uds, hls')), 1)
+        self.stepHelper.updateMessage('detection', (_('The "%s" utility is used by the %s to buffering and downloading [%s] links.') % ('wget', 'E2iStream', 'http, https, f4m, uds, hls')), 1)
         self.stepHelper.setInstallChoiseList( self._wgetInstallChoiseList )
         self.stepHelper.setPaths( self.wgetpaths )
         self.stepHelper.setDetectCmdBuilder( lambda path: path + " -V 2>&1 " )
@@ -900,7 +900,14 @@ class IPTVSetupImpl:
         printDBG("IPTVSetupImpl.cmdwrapStep")
             
         def _detectValidator(code, data):
-            return True,False
+            if 'cmdwrap input_file' in data:
+                try:
+                    tmp = re.search("Version\:\s*?([0-9.]+?)[^0-9^.]", data).group(1)
+                    if float(tmp) >= self.cmdwrapVersion:
+                        return True,False
+                except Exception:
+                    printExc()
+            return False,True
         
         def _deprecatedHandler(paths, stsTab, dataTab):
             sts, retPath = False, ""
@@ -954,8 +961,17 @@ class IPTVSetupImpl:
         self.binaryInstalledSuccessfully = False
             
         def _detectValidator(code, data):
-            return True,False
-        
+            printDBG("..:: e2iStream ::..  self.dukVersion = %s" % self.dukVersion)
+            if 'restrict-memory' in data:
+                try:
+                    ver = int(re.search('VER_FOR_IPTV\:\s([0-9]+?)\n', data).group(1))
+                    printDBG("..:: e2iStream ::..  Ver = %s" % ver)
+                    if ver >= self.dukVersion:
+                        return True, False
+                except Exception:
+                    printExc()
+            return False,True
+                
         def _deprecatedHandler(paths, stsTab, dataTab):
             sts, retPath = False, ""
             for idx in range(len(dataTab)):
@@ -967,9 +983,9 @@ class IPTVSetupImpl:
             softfpu = ''
             versions = {'sh4':2190, 'mipsel':2200}
             
-            if platform in ['sh4', 'mipsel'] and (self.binaryInstalledSuccessfully or self.glibcVersion < versions[platform] ):
-                old = '_old'
-            
+#            if platform in ['sh4', 'mipsel'] and (self.binaryInstalledSuccessfully or self.glibcVersion < versions[platform] ):
+#                old = '_old'
+           
             if platform == 'mipsel' and not IsFPUAvailable():
                 softfpu = '_softfpu'
             
@@ -1040,7 +1056,7 @@ class IPTVSetupImpl:
             return cmd
             
         self.stepHelper = CBinaryStepHelper("f4mdump", self.platform, self.openSSLVersion, config.plugins.iptvplayer.f4mdumppath)
-        self.stepHelper.updateMessage('detection', (_('The "%s" utility is used by %s for buffering and downloading [%s] links.') % ('f4mdump', 'E2iStream', 'f4m, uds')), 1)
+        self.stepHelper.updateMessage('detection', (_('The "%s" utility is used by the %s to buffering and downloading [%s] links.') % ('f4mdump', 'E2iStream', 'f4m, uds')), 1)
         self.stepHelper.setInstallChoiseList( self._f4mdumpInstallChoiseList )
         self.stepHelper.setPaths( self.f4mdumppaths )
         self.stepHelper.setDetectCmdBuilder( lambda path: path + " 2>&1 " )
@@ -1056,7 +1072,7 @@ class IPTVSetupImpl:
         if len(self.ffmpegVersion) >= 5:
             shortFFmpegVersion = self.ffmpegVersion[:-2]
             
-        if self.platform in ['sh4'] and shortFFmpegVersion in ['1.0', '1.1', '1.2', '2.0', '2.2', '2.5', '2.6', '2.7', '2.8', '3.0', '3.1', '3.2', '3.3', '3.4', '4.0', '4.1']: 
+        if self.platform in ['sh4'] and shortFFmpegVersion in ['1.0', '1.1', '1.2', '2.0', '2.2', '2.5', '2.6', '2.7', '2.8', '3.0', '3.1', '3.2', '3.3', '3.4', '4.0', '4.1']:
             self.ffmpegVersion = shortFFmpegVersion
             self.exteplayer3Step()
         elif self.platform in ['mipsel'] and shortFFmpegVersion in ['2.8', '3.0', '3.1', '3.2', '3.3', '3.4', '4.0', '4.1']:
@@ -1096,7 +1112,7 @@ class IPTVSetupImpl:
             cmd = SetupDownloaderCmdCreator(url, tmpFile) + ' > /dev/null 2>&1'
             return cmd
         self.stepHelper = CBinaryStepHelper("exteplayer3", self.platform, self.openSSLVersion, config.plugins.iptvplayer.exteplayer3path)
-        self.stepHelper.updateMessage('detection', _('The "%s" utility is used by %s as an external movie player based on the ffmpeg and libeplayer.') % ('E2iStream', 'exteplayer3'), 1)
+        self.stepHelper.updateMessage('detection', _('The "%s" utility is used by the %s as external movie player based on the ffmpeg and libeplayer.') % ('E2iStream', 'exteplayer3'), 1)
         self.stepHelper.setInstallChoiseList( self._exteplayer3InstallChoiseList )
         self.stepHelper.setPaths( self.exteplayer3paths )
         self.stepHelper.setDetectCmdBuilder( lambda path: path + " 2>&1 " )
@@ -1143,7 +1159,7 @@ class IPTVSetupImpl:
                 cmd = SetupDownloaderCmdCreator(url, tmpFile) + ' > /dev/null 2>&1'
                 return cmd
             self.stepHelper = CBinaryStepHelper("gstplayer", self.platform, self.openSSLVersion, config.plugins.iptvplayer.gstplayerpath)
-            self.stepHelper.updateMessage('detection', _('The "%s" utility is used by %s as an external movie player.') % ('gstplayer', 'E2iStream'), 1)
+            self.stepHelper.updateMessage('detection', _('The "%s" utility is used by the %s as external movie player.') % ('gstplayer', 'E2iStream'), 1)
             self.stepHelper.setInstallChoiseList( self._gstplayerInstallChoiseList )
             self.stepHelper.setPaths( self.gstplayerpaths )
             self.stepHelper.setDetectCmdBuilder( lambda path: path + " 2>&1 " )
@@ -1291,7 +1307,6 @@ class IPTVSetupImpl:
                 self.showMessage(message, MessageBox.TYPE_YESNO, self.binaryDownload_2)
             else:
                 self.stepHelper.getFinishHandler()(False)
-                
     ###################################################
     # STEP: binary DOWNLOAD
     ###################################################

@@ -2,7 +2,7 @@
 from Plugins.Extensions.IPTVPlayer.tools.iptvtools import printDBG
 from Plugins.Extensions.IPTVPlayer.libs import ph
 from Plugins.Extensions.IPTVPlayer.tools.iptvtypes import strwithmeta
-from Plugins.Extensions.IPTVPlayer.tsiplayer.tstools import TSCBaseHostClass
+from Plugins.Extensions.IPTVPlayer.tsiplayer.libs.tstools import TSCBaseHostClass
 from Components.config import config
 
 import re
@@ -12,12 +12,13 @@ import re
 def getinfo():
 	info_={}
 	info_['name']='N300.Me'
-	info_['version']='1.0 02/05/2019'
+	info_['version']='1.1 06/07/2019'
 	info_['dev']='RGYSoft'
-	info_['cat_id']='1'
+	info_['cat_id']='201'
 	info_['desc']='افلام و مسلسلات عربية واجنبية'
 	info_['icon']='http://www.n300.me/IMGCenter/IMGSystem/LOGO/LOGO_N300_me_200px.png'
 	info_['recherche_all']='0'
+	info_['update']='Bugs Fix'
 	return info_
 	
 	
@@ -66,58 +67,63 @@ class TSIPHost(TSCBaseHostClass):
 		gnr2=cItem['sub_mode']	
 		if gnr2==0:
 			sts, data = self.cm.getPage(url,self.defaultParams)
-			lst_data=re.findall('<table id="Content(.*?)</form>', data, re.S)
-			if 	lst_data:
-				lst_data2=re.findall('<a href="(.*?)".*?src="(.*?)".*?<h1.*?>(.*?)</h1>.*?<h2.*?>(.*?)</h2>.*?<span.*?>(.*?)</span>', lst_data[0], re.S)
-				for (url1,image,name,desc1,desc2) in lst_data2:
-					image=image.replace('../../../','http://www.n300.me/')
-					url1=url1.replace('../','http://www.n300.me/Mobile/Category/')
-					name = 'I '+name +' I \c00????00('+ desc1+')'
-					self.addVideo({'import':cItem['import'],'good_for_fav':True, 'hst':'tshost', 'category':'host2', 'url':url1, 'title':name, 'desc':desc2, 'icon':image} )	
+			if sts:
+				lst_data=re.findall('<table id="Content(.*?)</form>', data, re.S)
+				if 	lst_data:
+					lst_data2=re.findall('<a href="(.*?)".*?src="(.*?)".*?<h1.*?>(.*?)</h1>.*?<h2.*?>(.*?)</h2>.*?<span.*?>(.*?)</span>', lst_data[0], re.S)
+					for (url1,image,name,desc1,desc2) in lst_data2:
+						image=image.replace('../../../','http://www.n300.me/')
+						url1=url1.replace('../','http://www.n300.me/Mobile/Category/')
+						name = 'I '+name +' I \c00????00('+ desc1+')'
+						self.addVideo({'import':cItem['import'],'good_for_fav':True, 'hst':'tshost', 'category':'host2', 'url':url1, 'title':name, 'desc':desc2, 'icon':image} )	
 		elif gnr2==1:
 			sts, data = self.cm.getPage(url,self.defaultParams)
-			lst_data=re.findall('<table id="Content(.*?)</form>', data, re.S)
-			if 	lst_data:
-				lst_data2=re.findall('<a href=\'(.*?)&.*?src="(.*?)".*?<span.*?>(.*?)</span>.*?<span.*?>(.*?)</span>.*?<span.*?>(.*?)</span>', lst_data[0], re.S)
-				for (url1,image,name,desc1,desc2) in lst_data2:
-					image=image.replace('../../../','http://www.n300.me/')
-					url1=url1.replace('../','http://www.n300.me/Mobile/Category/')
-					name = 'I '+name +' I \c00????00('+ desc2+')'
-					self.addDir({'import':cItem['import'],'good_for_fav':True, 'category':'host2', 'url':url1, 'title':name, 'desc':desc1, 'icon':image, 'mode':'30','sub_mode':2} )	
+			if sts:
+				lst_data=re.findall('<table id="Content(.*?)</form>', data, re.S)
+				if 	lst_data:
+					lst_data2=re.findall('<a href=\'(.*?)&.*?src="(.*?)".*?<span.*?>(.*?)</span>.*?<span.*?>(.*?)</span>.*?<span.*?>(.*?)</span>', lst_data[0], re.S)
+					for (url1,image,name,desc1,desc2) in lst_data2:
+						image=image.replace('../../../','http://www.n300.me/')
+						url1=url1.replace('../','http://www.n300.me/Mobile/Category/')
+						name = 'I '+name +' I \c00????00('+ desc2+')'
+						self.addDir({'import':cItem['import'],'good_for_fav':True, 'category':'host2', 'url':url1, 'title':name, 'desc':desc1, 'icon':image, 'mode':'30','sub_mode':2} )	
 		elif gnr2==2:	 
 			sts, data = self.cm.getPage(url,self.defaultParams)
-			lst_data=re.findall('<table id="Content(.*?)</form>', data, re.S)
-			printDBG('11111'+data)
-			if 	lst_data:
-				printDBG('1111122222222')
-				lst_data2=re.findall('<a href="(.*?)&.*?src="(.*?)".*?<span.*?>(.*?)</span>', lst_data[0], re.S)
-				for (url1,image,name) in lst_data2:
-					printDBG('11111333333333')
-					image=image.replace('../../../','http://www.n300.me/')
-					url1='http://www.n300.me/phone/Category/moslsl/'+url1
-					if '<br />' in name:
-						x1,name = name.split('<br />',1)
-					self.addVideo({'import':cItem['import'],'good_for_fav':True, 'hst':'tshost', 'category':'host2', 'url':url1, 'title':ph.clean_html(name), 'desc':'', 'icon':image} )	
+			if sts:
+				lst_data=re.findall('<table id="Content(.*?)</form>', data, re.S)
+				printDBG('11111'+data)
+				if 	lst_data:
+					printDBG('1111122222222')
+					lst_data2=re.findall('<a href="(.*?)&.*?src="(.*?)".*?<span.*?>(.*?)</span>', lst_data[0], re.S)
+					for (url1,image,name) in lst_data2:
+						printDBG('11111333333333')
+						image=image.replace('../../../','http://www.n300.me/')
+						url1='http://www.n300.me/phone/Category/moslsl/'+url1
+						if '<br />' in name:
+							x1,name = name.split('<br />',1)
+						self.addVideo({'import':cItem['import'],'good_for_fav':True, 'hst':'tshost', 'category':'host2', 'url':url1, 'title':ph.clean_html(name), 'desc':'', 'icon':image} )	
 
 		
 	def get_links(self,cItem): 	
 		urlTab = []	
 		URL=cItem['url']
 		sts, data0 = self.cm.getPage(URL,self.defaultParams)
-		Liste_els0 = re.findall('class="ChooseServer">(.*?)</table>', data0, re.S)
-		if Liste_els0:
-			Liste_els1 = re.findall('<input id="(.*?)".*?\(\'(.*?)\'.*?value="(.*?)"', Liste_els0[0], re.S)
-			for (x1,url,titre) in Liste_els1:
-				nr=1 
-				if '.mp4' in url:
-					nr=0
-					url=url.replace('../../../','http://www.n300.me/')
-					if '?videoURL=' in url:
-						sts, data0 = self.cm.getPage(url,self.defaultParams)
-						Liste_els1 = re.findall('file:.*?["\'](.*?)["\']', data0, re.S)
-						if Liste_els1:
-							url=Liste_els1[0]
-				urlTab.append({'name':titre, 'url':url, 'need_resolve':nr})			
+		if sts:
+			Liste_els0 = re.findall('class="ChooseServer">(.*?)</table>', data0, re.S)
+			if Liste_els0:
+				Liste_els1 = re.findall('<input id="(.*?)".*?\(\'(.*?)\'.*?value="(.*?)"', Liste_els0[0], re.S)
+				for (x1,url,titre) in Liste_els1:
+					nr=1 
+					if '.mp4' in url:
+						nr=0
+						url=url.replace('../../../','http://www.n300.me/')
+						if '?videoURL=' in url:
+							sts, data0 = self.cm.getPage(url,self.defaultParams)
+							Liste_els1 = re.findall('file:.*?["\'](.*?)["\']', data0, re.S)
+							if Liste_els1:
+								url=Liste_els1[0]
+					
+					urlTab.append({'name':titre, 'url':url, 'need_resolve':nr})			
 		return urlTab
 	
 	def start(self,cItem):      

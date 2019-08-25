@@ -2,11 +2,11 @@
 from Plugins.Extensions.IPTVPlayer.tools.iptvtools import printDBG
 from Plugins.Extensions.IPTVPlayer.libs.urlparserhelper import getDirectM3U8Playlist
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
-from Plugins.Extensions.IPTVPlayer.tsiplayer.tstools import TSCBaseHostClass
+from Plugins.Extensions.IPTVPlayer.tsiplayer.libs.tstools import TSCBaseHostClass
 
 from os import path as os_path
 import re
-telequebec_path = resolveFilename(SCOPE_PLUGINS, 'Extensions/IPTVPlayer/tsiplayer/telequebec.tsbase')
+telequebec_path = resolveFilename(SCOPE_PLUGINS, 'Extensions/IPTVPlayer/tsiplayer/libs/telequebec.tsbase')
 
 ###################################################
 #01# HOST http://www.telequebec.tv/
@@ -16,7 +16,7 @@ def getinfo():
 	info_['name']='TeleQuebec.Tv'
 	info_['version']='1.0 16/04/2019'
 	info_['dev']='RGYSoft'
-	info_['cat_id']='3'
+	info_['cat_id']='303'
 	info_['desc']='Jeunesse VF'
 	info_['icon']='https://www.telequebec.tv/apple-touch-icon.png'
 	info_['recherche_all']='0'

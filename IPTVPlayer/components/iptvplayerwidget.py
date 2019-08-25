@@ -4,7 +4,7 @@
 #
 # @Codermik release, based on @Samsamsam's E2iPlayer public.
 # Released with kind permission of Samsamsam.
-# All code developed by Samsamsam is the property of the Samsamsam and the E2iPlayer project,  
+# All code developed by Samsamsam is the property of Samsamsam and the E2iPlayer project,  
 # all other work is © E2iStream Team, aka Codermik.  TSiPlayer is © Rgysoft, his group can be
 # found here:  https://www.facebook.com/E2TSIPlayer/
 #
@@ -12,6 +12,7 @@
 #
 #
 
+#
 #  IplaPlayer based on SHOUTcast
 #
 #  $Id$
@@ -504,7 +505,7 @@ class E2iPlayerWidget(Screen):
                     exceptStack = self.workThread.getExceptStack()
                     reporter = GetPluginDir('iptvdm/reporthostcrash.py')
                     msg = urllib_quote('%s|%s|%s|%s' % ('HOST_CRASH', E2iPlayerWidget.IPTV_VERSION, self.hostName, self.getCategoryPath()))
-                    self.crashConsole = iptv_system('python "%s" "https://www.softrix.co.uk/istream/reporting/report.php?msg=%s" "%s" 2&>1 > /dev/null' % (reporter, msg, exceptStack))
+                    self.crashConsole = iptv_system('python "%s" "http://www.softrix.co.uk/istream/reporting/report.php?msg=%s" "%s" 2&>1 > /dev/null' % (reporter, msg, exceptStack))
                     printDBG(msg)
                 except Exception:
                     printExc()
@@ -700,7 +701,7 @@ class E2iPlayerWidget(Screen):
             if ret[1] == "info": #information about plugin
                 TextMSG  = _("Lead programmer: ") + "\n\t- Codermik\n"
                 TextMSG += _("E-mail: ") + "\n\t- codermik@tuta.io\n"
-                TextMSG += _("www: ") + "\n\t- https://www.facebook.com/e2iStream/" + '\n\t- https://www.softrix.co.uk/istream/\n'
+                TextMSG += _("www: ") + "\n\t- https://www.facebook.com/e2iStream/" + '\n\t- http://www.softrix.co.uk/istream/\n'
                 TextMSG += _("Previous Developers: ") 
                 developersTab = [{'nick':'samsamsam',},
                                  {'nick':'zdzislaw22',    },
@@ -1090,18 +1091,17 @@ class E2iPlayerWidget(Screen):
         self.setTitle( 'E2iStream ' + GetIPTVPlayerVerstion() )
         self.loadSpinner()
         self.hideSpinner()
-#        self.checkBlacklistedImage()
         self.askUpdateAvailable(self.selectHost)
     
     def __requestCheckUpdate(self):
         lastVerUrl = GetUpdateServerUri('lastversion.ver')
-        if config.plugins.iptvplayer.autoCheckForUpdate.value:
-            self.checkUpdateTimer.start(self.checkUpdateTimer_interval, True)
-            if IsExecutable( DMHelper.GET_WGET_PATH() ):
-                cmd = '%s "%s" -O - 2> /dev/null ' % (DMHelper.GET_WGET_PATH(), lastVerUrl)
-                if None != self.checkUpdateConsole: self.checkUpdateConsole.terminate()
-                printDBG("__requestCheckUpdate cmd[%r]" % cmd)
-                self.checkUpdateConsole = iptv_system( cmd, self.__checkUpdateCmdFinished )
+#        if config.plugins.iptvplayer.autoCheckForUpdate.value:
+        self.checkUpdateTimer.start(self.checkUpdateTimer_interval, True)
+        if IsExecutable( DMHelper.GET_WGET_PATH() ):
+            cmd = '%s "%s" -O - 2> /dev/null ' % (DMHelper.GET_WGET_PATH(), lastVerUrl)
+            if None != self.checkUpdateConsole: self.checkUpdateConsole.terminate()
+            printDBG("__requestCheckUpdate cmd[%r]" % cmd)
+            self.checkUpdateConsole = iptv_system( cmd, self.__checkUpdateCmdFinished )
                 
     def __checkUpdateCmdFinished(self, status, lastversion):
         printDBG("__checkUpdateCmdFinished  status[%r] lastversion[%r]" % (status, lastversion))
@@ -1109,15 +1109,10 @@ class E2iPlayerWidget(Screen):
             self.lastPluginVersion = lastversion
         
     def askUpdateAvailable(self, NoUpdateCallback):
-        printDBG("..:: E2iStream ::..   askUpdateAvailable(self, NoUpdateCallback) -------------------------------------------- \n\n")
-        printDBG("self.lastPluginVersion = %s\n" % self.lastPluginVersion)
-        printDBG("GetVersionNum( self.lastPluginVersion ) = %s\n" % GetVersionNum( self.lastPluginVersion ))
-        printDBG("GetVersionNum( GetIPTVPlayerVerstion() = %s\n" % GetVersionNum( GetIPTVPlayerVerstion()))
-        verChecked = config.plugins.iptvplayer.updateLastCheckedVersion.value
-        printDBG("config.plugins.iptvplayer.updateLastCheckedVersion.value = %s\n" % verChecked)
-        printDBG("------------------------------------------------------------------------------------------------------------- \n\n")          
-        if  config.plugins.iptvplayer.autoCheckForUpdate.value \
-            and  0 < GetVersionNum( self.lastPluginVersion ) \
+        printDBG(">> askUpdateAvailable")
+#        if  config.plugins.iptvplayer.autoCheckForUpdate.value \
+#            and  0 < GetVersionNum( self.lastPluginVersion ) \
+        if  0 < GetVersionNum( self.lastPluginVersion ) \
             and GetVersionNum( self.lastPluginVersion ) > GetVersionNum( GetIPTVPlayerVerstion() ) \
             and self.lastPluginVersion != config.plugins.iptvplayer.updateLastCheckedVersion.value:
             
@@ -2212,26 +2207,6 @@ class E2iPlayerWidget(Screen):
         else:
             self.checkAutoPlaySequencer()
             
-#    def checkBlacklistedImage(self):
-#        if self.checkWrongImage:
-#            self.checkWrongImage = False
-#            try:
-#                if os_path.isfile(GetExtensionsDir('/iPabUpdater/__init__.pyo')):
-#                    message = ["WARNING (phase 1/3)"]
-#                    message.append("Because of blocking part of functionality of the IPTVPlayer by http://ipab.tv/ developer your image was blacklisted.")
-#                    message.append("Please be also informed that users of http://ipab.tv/ will NOT get support, due to same reason.")
-#                    GetIPTVNotify().push('\n'.join(message), 'error', 120)
-#                elif os_path.isfile('/etc/bpversion'):
-#                    with open("/etc/bpversion") as file:  
-#                        data = file.read(256) 
-#                        if 'opendonki' in data.lower():
-#                            message = ["WARNING (phase 1/3)"]
-#                            message.append("Because of very bad behaviour of user @DirtyDonki your image was blacklisted.")
-#                            message.append("Please be also informed that users of https://vuplus-images.co.uk/ forum will NOT get support, due to same reason.")
-#                            GetIPTVNotify().push('\n'.join(message), 'error', 120)
-#            except:
-#                printExc()
-
 #class E2iPlayerWidget
 
 class IPTVPlayerLCDScreen(Screen):
